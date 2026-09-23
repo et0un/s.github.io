@@ -449,11 +449,17 @@ a.resource-detail-card.internal-card:hover:after{transform:translateX(3px)}
 }
 
 
-/* v5: center the reading column and keep body copy/media in one balanced measure. */
-.lecture-article{width:min(1080px,100%);margin-inline:auto!important}
-.lecture-article>p,.lecture-article>ul,.lecture-article>ol,.lecture-article>blockquote,.lecture-article>.embedded-media,.lecture-article>.media-pair{max-width:940px;margin-left:auto;margin-right:auto}
-.lecture-article>.lead{max-width:820px;margin-left:auto;margin-right:auto}
-.lecture-article>h2,.lecture-article>h3{max-width:940px;margin-left:auto;margin-right:auto}
-.lecture-article>.embedded-media{width:100%}
+/* Keep editable card typography visible on published pages. */
 .resource-detail-card strong{font-size:inherit;text-align:inherit}
 .resource-detail-card span{font-size:inherit;text-align:inherit}
+
+/* v6: resource pages use the full reading width; headings and paragraphs share one left edge. */
+.resource-page .resource-article{width:100%;max-width:none;margin:0}
+.resource-page .resource-article .resource-lead,
+.resource-page .resource-article p,
+.resource-page .resource-article li,
+.resource-page .resource-article > div:not(.resource-kicker):not(.resource-card-grid),
+.resource-page .resource-article ul,
+.resource-page .resource-article ol,
+.resource-page .resource-article blockquote{max-width:none!important}
+.resource-page .resource-article .resource-card-grid{width:100%;max-width:none}
