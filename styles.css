@@ -110,6 +110,7 @@ a{color:inherit}
 .lecture-pagination a:last-child{justify-content:flex-end}
 .lecture-pagination a:hover{border-color:#666;background:#0d0d0d;color:#fff}
 .lecture-pagination a[hidden]{display:none}
+.lecture-pagination #prevLecture[hidden] + #nextLecture{grid-column:2}
 .topics-toggle{display:none}
 .sidebar-backdrop{display:none}
 .placeholder-note{border:1px dashed #353535;border-radius:8px;padding:22px;color:#999;background:#0a0a0a;margin:28px 0}
@@ -154,6 +155,7 @@ a{color:inherit}
   .lecture-article .lead{font-size:17px}
   .media-pair{grid-template-columns:1fr}
   .lecture-pagination{grid-template-columns:1fr;gap:10px}
+  .lecture-pagination #prevLecture[hidden] + #nextLecture{grid-column:1}
 }
 @media(max-width:520px){
   .nav nav{gap:22px}
