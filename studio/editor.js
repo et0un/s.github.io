@@ -1092,6 +1092,27 @@
       setStatus('Карточки обновлены из предпросмотра');
     });
 
+    function normalizeResourceBlocks(root) {
+      if (!root) return;
+      [...root.childNodes].forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const value = node.textContent.replace(/\s+/g, ' ').trim();
+          if (!value) { node.remove(); return; }
+          const p = root.ownerDocument.createElement('p');
+          p.textContent = value;
+          node.replaceWith(p);
+          return;
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        const tag = node.tagName.toLowerCase();
+        if (tag === 'div' && !node.classList.contains('resource-card-grid') && !node.classList.contains('resource-kicker')) {
+          const p = root.ownerDocument.createElement('p');
+          p.innerHTML = node.innerHTML;
+          node.replaceWith(p);
+        }
+      });
+    }
+
     // ---------------- resource-page editor ----------------
     const resourceDraftKey = path => `studio-resource-draft:${courseName}:${path || 'resource'}`;
 
@@ -1118,6 +1139,8 @@
     resourcePath?.addEventListener('change', () => { resourceLoadedPath = ''; });
     resourceTitle?.addEventListener('input', () => { resourcePreviewTitle.textContent = resourceTitle.value.trim() || 'Страница'; scheduleResourceDraftSave(); });
     resourceEditable?.addEventListener('input', scheduleResourceDraftSave);
+    resourceEditable?.addEventListener('blur', () => { normalizeResourceBlocks(resourceEditable); scheduleResourceDraftSave(); });
+    resourceEditable?.addEventListener('paste', () => setTimeout(() => { normalizeResourceBlocks(resourceEditable); scheduleResourceDraftSave(); }, 0));
     resourceEditable?.addEventListener('click', event => { if (event.target.closest('a')) event.preventDefault(); });
 
     async function loadPublishedResource() {
@@ -1140,6 +1163,7 @@
           if (afterTitle) bodyNodes.push(node.outerHTML);
         });
         resourceEditable.innerHTML = bodyNodes.join('\n') || '<p>Начните писать…</p>';
+        normalizeResourceBlocks(resourceEditable);
         readResourceCardsFromPreview();
         resourceLoadedPath = path;
         setStatus('Страница загружена');
@@ -1193,6 +1217,7 @@
       });
       const tmp = doc.createElement('div');
       tmp.innerHTML = resourceEditable.innerHTML.trim();
+      normalizeResourceBlocks(tmp);
       [...tmp.childNodes].forEach(node => article.appendChild(node));
       const title = doc.querySelector('title');
       if (title) title.textContent = `${resourceTitle.value.trim() || 'Страница'} — ${courseName}`;
