@@ -90,6 +90,9 @@
     const resourceTitle = document.getElementById('resourceTitle');
     const resourcePreviewTitle = document.getElementById('resourcePreviewTitle');
     const resourceEditable = document.getElementById('resourceEditable');
+    const resourceCardFields = document.getElementById('resourceCardFields');
+    const resourceAddCard = document.getElementById('resourceAddCard');
+    const resourceRefreshCards = document.getElementById('resourceRefreshCards');
 
     const githubOwner = document.getElementById('githubOwner');
     const githubRepo = document.getElementById('githubRepo');
@@ -104,6 +107,8 @@
     let publishedResourceSource = '';
     let resourceLoadedPath = '';
     let resourceDraftTimer = null;
+    let resourceCards = [];
+    let resourceGridClasses = 'resource-card-grid';
     let homeDraftTimer = null;
     const assetFiles = new Map();
     const assetUrls = new Map();
@@ -971,6 +976,122 @@
     });
 
 
+    // ---------------- structured cards / menus ----------------
+    function resourceCardGrid() {
+      return resourceEditable?.querySelector('.resource-card-grid') || null;
+    }
+
+    function readResourceCardsFromPreview() {
+      const grid = resourceCardGrid();
+      if (!grid) {
+        resourceCards = [];
+        resourceGridClasses = 'resource-card-grid';
+        renderResourceCardFields();
+        return;
+      }
+      resourceGridClasses = grid.className || 'resource-card-grid';
+      resourceCards = [...grid.children]
+        .filter(el => el.classList?.contains('resource-detail-card'))
+        .map(el => ({
+          title: el.querySelector('strong')?.textContent?.trim() || 'Новая карточка',
+          description: el.querySelector('span')?.textContent?.trim() || '',
+          href: el.tagName === 'A' ? (el.getAttribute('href') || '') : '',
+          newTab: el.tagName === 'A' && el.getAttribute('target') === '_blank',
+          extraClasses: [...el.classList].filter(c => !['resource-detail-card','external-card','internal-card'].includes(c))
+        }));
+      renderResourceCardFields();
+    }
+
+    function cardMarkup(card) {
+      const href = String(card.href || '').trim();
+      const extras = Array.isArray(card.extraClasses) ? card.extraClasses.filter(Boolean) : [];
+      const isExternal = /^(https?:)?\/\//i.test(href) || /^(mailto:|tel:)/i.test(href);
+      const classes = ['resource-detail-card', ...(href ? [isExternal ? 'external-card' : 'internal-card'] : []), ...extras]
+        .filter((v, i, a) => a.indexOf(v) === i).join(' ');
+      const inner = `<strong>${escapeHtml(card.title || 'Новая карточка')}</strong><span>${escapeHtml(card.description || '')}</span>`;
+      if (!href) return `<div class="${escapeHtml(classes)}">${inner}</div>`;
+      const target = card.newTab || isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+      return `<a class="${escapeHtml(classes)}" href="${escapeHtml(href)}"${target}>${inner}</a>`;
+    }
+
+    function syncResourceCardsToPreview() {
+      if (!resourceEditable) return;
+      let grid = resourceCardGrid();
+      if (!grid) {
+        grid = document.createElement('div');
+        grid.className = resourceGridClasses || 'resource-card-grid';
+        resourceEditable.appendChild(grid);
+      }
+      grid.className = resourceGridClasses || 'resource-card-grid';
+      grid.innerHTML = resourceCards.map(cardMarkup).join('');
+      resourceEditable.dispatchEvent(new Event('input'));
+    }
+
+    function renderResourceCardFields() {
+      if (!resourceCardFields) return;
+      if (!resourceCards.length) {
+        resourceCardFields.innerHTML = '<div class="resource-card-empty">На этой странице пока нет карточек. Нажмите «+ Добавить карточку», чтобы создать блок.</div>';
+        return;
+      }
+      resourceCardFields.innerHTML = resourceCards.map((card, i) => `
+        <div class="resource-card-edit-row" data-card-index="${i}">
+          <div class="resource-card-edit-top">
+            <input data-card-field="title" value="${escapeHtml(card.title || '')}" placeholder="Название карточки">
+            <button class="resource-card-remove" type="button" title="Удалить карточку" aria-label="Удалить карточку">×</button>
+          </div>
+          <textarea data-card-field="description" placeholder="Описание">${escapeHtml(card.description || '')}</textarea>
+          <input class="resource-card-href" data-card-field="href" value="${escapeHtml(card.href || '')}" placeholder="Ссылка, например https://... или requirements.html">
+          <div class="resource-card-edit-meta">
+            <span>Карточка ${i + 1}</span>
+            <label><input type="checkbox" data-card-field="newTab" ${card.newTab ? 'checked' : ''}> открыть в новой вкладке</label>
+          </div>
+        </div>`).join('');
+    }
+
+    resourceCardFields?.addEventListener('input', event => {
+      const row = event.target.closest('.resource-card-edit-row');
+      if (!row) return;
+      const i = Number(row.dataset.cardIndex);
+      const card = resourceCards[i];
+      if (!card) return;
+      const field = event.target.dataset.cardField;
+      if (field === 'newTab') card.newTab = event.target.checked;
+      else if (field) card[field] = event.target.value;
+      syncResourceCardsToPreview();
+    });
+    resourceCardFields?.addEventListener('change', event => {
+      if (event.target.dataset.cardField !== 'newTab') return;
+      const row = event.target.closest('.resource-card-edit-row');
+      const card = resourceCards[Number(row?.dataset.cardIndex)];
+      if (!card) return;
+      card.newTab = event.target.checked;
+      syncResourceCardsToPreview();
+    });
+    resourceCardFields?.addEventListener('click', event => {
+      const remove = event.target.closest('.resource-card-remove');
+      if (!remove) return;
+      const row = remove.closest('.resource-card-edit-row');
+      const i = Number(row?.dataset.cardIndex);
+      if (!Number.isInteger(i)) return;
+      resourceCards.splice(i, 1);
+      renderResourceCardFields();
+      syncResourceCardsToPreview();
+      setStatus('Карточка удалена');
+    });
+
+    resourceAddCard?.addEventListener('click', () => {
+      resourceCards.push({ title:'Новая карточка', description:'Описание карточки.', href:'', newTab:false, extraClasses:[] });
+      renderResourceCardFields();
+      syncResourceCardsToPreview();
+      resourceCardFields?.querySelector(`[data-card-index="${resourceCards.length - 1}"] input[data-card-field="title"]`)?.focus();
+      setStatus('Карточка добавлена');
+    });
+
+    resourceRefreshCards?.addEventListener('click', () => {
+      readResourceCardsFromPreview();
+      setStatus('Карточки обновлены из предпросмотра');
+    });
+
     // ---------------- resource-page editor ----------------
     const resourceDraftKey = path => `studio-resource-draft:${courseName}:${path || 'resource'}`;
 
@@ -1019,6 +1140,7 @@
           if (afterTitle) bodyNodes.push(node.outerHTML);
         });
         resourceEditable.innerHTML = bodyNodes.join('\n') || '<p>Начните писать…</p>';
+        readResourceCardsFromPreview();
         resourceLoadedPath = path;
         setStatus('Страница загружена');
       } catch (error) { setStatus('Не удалось загрузить страницу'); }

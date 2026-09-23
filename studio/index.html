@@ -168,6 +168,16 @@
             <p class="editor-help">Текст внутри карточек тоже можно менять прямо в предпросмотре. Чтобы поменять адрес карточки или текстовой ссылки, поставьте курсор внутрь неё и нажмите «Ссылка».</p>
           </section>
 
+          <section class="editor-section" id="resourceCardsSection">
+            <h2>Карточки / меню</h2>
+            <div class="resource-card-editor-list" id="resourceCardFields"></div>
+            <div class="editor-actions">
+              <button class="editor-secondary" id="resourceAddCard" type="button">+ Добавить карточку</button>
+              <button class="editor-secondary" id="resourceRefreshCards" type="button">Обновить из предпросмотра</button>
+            </div>
+            <p class="editor-help">Здесь можно добавлять, удалять и перестраивать карточки вроде программ, требований, этапов работы и контактов. Для кликабельной карточки укажите ссылку; оставьте поле пустым, если переход не нужен.</p>
+          </section>
+
           <section class="editor-section">
             <h2>Сохранение</h2>
             <div class="editor-actions"><button class="editor-primary editor-publish-button" id="publishResource">Опубликовать на GitHub</button><button class="editor-secondary" id="downloadResource">Скачать HTML</button></div>
@@ -212,6 +222,6 @@
   </div>
 
   <script src="../topics.js"></script>
-  <script src="editor.js?v=7"></script>
+  <script src="editor.js?v=8"></script>
 </body>
 </html>
