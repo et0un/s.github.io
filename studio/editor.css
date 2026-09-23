@@ -220,4 +220,14 @@ button{cursor:pointer}
 .card-text-controls{display:flex;flex-wrap:wrap;gap:7px 12px;margin:8px 0;color:#aaa;font-size:10px}
 .home-card-text-controls{grid-column:1/-1;margin-top:2px}
 .resource-card-edit-row .card-text-controls select{padding:5px 6px}
-.editor-content .embedded-media{width:min(940px,100%);margin-left:auto!important;margin-right:auto!important}
+
+
+/* v6: the resource-page editor preview mirrors the wider published reading area. */
+.editor-preview-inner.resource-editor-preview{width:100%;max-width:none}
+.resource-editor-preview .resource-article{width:100%;max-width:none;margin:0}
+.resource-editor-content>p,
+.resource-editor-content>ul,
+.resource-editor-content>ol,
+.resource-editor-content>blockquote,
+.resource-editor-content>div:not(.resource-card-grid){max-width:none!important}
+.resource-editor-content .resource-card-grid{width:100%;max-width:none}
