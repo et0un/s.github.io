@@ -463,3 +463,18 @@ a.resource-detail-card.internal-card:hover:after{transform:translateX(3px)}
 .resource-page .resource-article ol,
 .resource-page .resource-article blockquote{max-width:none!important}
 .resource-page .resource-article .resource-card-grid{width:100%;max-width:none}
+
+
+/* v7: let lecture copy use the full article width so its right edge follows the media. */
+.lecture-article p,
+.lecture-article li,
+.lecture-article ul,
+.lecture-article ol,
+.lecture-article blockquote,
+.lecture-article .lead{max-width:none}
+
+/* Align the first content labels with the headings in the adjacent sidebars. */
+@media(min-width:961px){
+  .lecture-main{padding-top:26px}
+  .resource-main{padding-top:28px}
+}
