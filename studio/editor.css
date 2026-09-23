@@ -210,3 +210,14 @@ button{cursor:pointer}
 .resource-editor-content h3{font-size:22px;line-height:1.25;margin:34px 0 12px}
 .resource-editor-content ul,.resource-editor-content ol{max-width:940px;padding-left:24px;margin:14px 0 24px}
 .resource-editor-content blockquote{max-width:920px;margin:30px 0;padding:4px 0 4px 20px;border-left:2px solid #bdbdbd;color:#d8d8d8;font-size:17px;font-style:italic;line-height:1.65}
+
+
+/* v5 typography controls */
+.text-format-tools{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:8px;padding:9px;border:1px solid #252525;border-radius:8px;background:#0b0b0b}
+.text-format-tools label,.card-text-controls label{display:flex;align-items:center;gap:7px;color:#aaa;font-size:11px}
+.text-format-tools select,.card-text-controls select{border:1px solid #303030;background:#090909;color:#eee;border-radius:6px;padding:6px 8px;font:inherit;font-size:11px}
+.text-format-tools .text-align-label{margin-left:5px;color:#777;font-size:10px}
+.card-text-controls{display:flex;flex-wrap:wrap;gap:7px 12px;margin:8px 0;color:#aaa;font-size:10px}
+.home-card-text-controls{grid-column:1/-1;margin-top:2px}
+.resource-card-edit-row .card-text-controls select{padding:5px 6px}
+.editor-content .embedded-media{width:min(940px,100%);margin-left:auto!important;margin-right:auto!important}

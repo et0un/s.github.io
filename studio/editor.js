@@ -372,6 +372,61 @@
       });
     });
 
+    // Shared font-size and alignment controls for all rich-text editors.
+    const richEditors = { lecture: editable, home: homeAboutEditable, resource: resourceEditable };
+    const savedEditorRanges = new Map();
+    function saveEditorRange(root) {
+      const selection = getSelection();
+      if (root && selection?.rangeCount && root.contains(selection.anchorNode)) savedEditorRanges.set(root, selection.getRangeAt(0).cloneRange());
+    }
+    function restoreEditorRange(root) {
+      const selection = getSelection();
+      const range = savedEditorRanges.get(root);
+      if (range && root.contains(range.commonAncestorContainer)) {
+        root.focus(); selection.removeAllRanges(); selection.addRange(range); return range;
+      }
+      return selection?.rangeCount && root.contains(selection.anchorNode) ? selection.getRangeAt(0) : null;
+    }
+    function applyEditorFontSize(root, size) {
+      const range = restoreEditorRange(root);
+      if (!range) return;
+      const blocks = [...root.querySelectorAll('p,li,h2,h3,blockquote,div:not(.resource-card-grid)')];
+      let touched = blocks.filter(block => { try { return range.intersectsNode(block); } catch (_) { return false; } });
+      if (range.collapsed) {
+        let node = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
+        const block = node?.closest('p,li,h2,h3,blockquote,div:not(.resource-card-grid)');
+        if (block && root.contains(block)) block.style.fontSize = `${size}px`;
+        else root.style.fontSize = `${size}px`;
+      } else if (touched.length === 1 && touched[0].contains(range.startContainer) && touched[0].contains(range.endContainer)) {
+        const span = document.createElement('span'); span.style.fontSize = `${size}px`;
+        try { range.surroundContents(span); }
+        catch (_) { const contents = range.extractContents(); span.append(contents); range.insertNode(span); }
+      } else {
+        touched.forEach(block => { block.style.fontSize = `${size}px`; });
+      }
+      root.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    document.querySelectorAll('[data-font-size-for]').forEach(select => {
+      const root = richEditors[select.dataset.fontSizeFor];
+      if (!root) return;
+      select.addEventListener('pointerdown', () => saveEditorRange(root));
+      select.addEventListener('focus', () => saveEditorRange(root));
+      select.addEventListener('change', () => applyEditorFontSize(root, Number(select.value)));
+    });
+    document.querySelectorAll('[data-text-align-for]').forEach(button => {
+      const root = richEditors[button.dataset.textAlignFor];
+      if (!root) return;
+      button.addEventListener('mousedown', () => saveEditorRange(root));
+      button.addEventListener('click', () => {
+        const range = restoreEditorRange(root);
+        if (!range) return;
+        const align = button.dataset.align;
+        const command = align === 'center' ? 'justifyCenter' : align === 'right' ? 'justifyRight' : 'justifyLeft';
+        document.execCommand(command, false, null);
+        root.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    });
+
     function insertAtCaret(html, root = editable) {
       root.focus();
       const selection = getSelection();
@@ -830,14 +885,23 @@
             <button class="home-link-remove" type="button" aria-label="Удалить карточку">×</button>
           </div>
           <input class="href-input" data-role="href" value="${escapeHtml(item.href || '')}" aria-label="Ссылка">
+          <div class="card-text-controls home-card-text-controls">
+            <label>Название · размер <select data-role="fontSize"><option value="14" ${Number(item.fontSize||16)===14?'selected':''}>14 px</option><option value="16" ${Number(item.fontSize||16)===16?'selected':''}>16 px</option><option value="18" ${Number(item.fontSize||16)===18?'selected':''}>18 px</option><option value="20" ${Number(item.fontSize||16)===20?'selected':''}>20 px</option><option value="24" ${Number(item.fontSize||16)===24?'selected':''}>24 px</option></select></label>
+            <label>Выравнивание <select data-role="textAlign"><option value="left" ${(!item.textAlign||item.textAlign==='left')?'selected':''}>Слева</option><option value="center" ${item.textAlign==='center'?'selected':''}>По центру</option><option value="right" ${item.textAlign==='right'?'selected':''}>Справа</option></select></label>
+          </div>
         </div>`).join('');
-      homeLinkFields.querySelectorAll('input').forEach(input => input.addEventListener('input', event => {
+      homeLinkFields.querySelectorAll('input,select').forEach(input => {
+        const updateHomeCard = event => {
         const row = event.target.closest('.home-link-row');
         const i = Number(row.dataset.linkIndex);
-        homeLinks[i][event.target.dataset.role] = event.target.value;
+        const role = event.target.dataset.role;
+        homeLinks[i][role] = role === 'fontSize' ? Number(event.target.value) : event.target.value;
         renderHomeLinksPreview();
         scheduleHomeDraftSave();
-      }));
+        };
+        input.addEventListener('input', updateHomeCard);
+        input.addEventListener('change', updateHomeCard);
+      });
       homeLinkFields.querySelectorAll('.home-link-remove').forEach(btn => btn.addEventListener('click', event => {
         const i = Number(event.target.closest('.home-link-row').dataset.linkIndex);
         homeLinks.splice(i, 1);
@@ -848,7 +912,11 @@
     }
 
     function renderHomeLinksPreview() {
-      homeLinksPreview.innerHTML = homeLinks.map(item => `<a class="resource" href="${escapeHtml(item.href || '#')}" onclick="return false"><b>${escapeHtml(item.icon || '↗')}</b><span>${escapeHtml(item.label || 'Новая ссылка')}</span></a>`).join('');
+      homeLinksPreview.innerHTML = homeLinks.map(item => {
+        const fontSize = [14,16,18,20,24].includes(Number(item.fontSize)) ? Number(item.fontSize) : 16;
+        const textAlign = ['left','center','right'].includes(item.textAlign) ? item.textAlign : 'left';
+        return `<a class="resource" href="${escapeHtml(item.href || '#')}" onclick="return false"><b>${escapeHtml(item.icon || '↗')}</b><span style="font-size:${fontSize}px;text-align:${textAlign};justify-content:${textAlign === 'right' ? 'flex-end' : textAlign === 'center' ? 'center' : 'flex-start'}">${escapeHtml(item.label || 'Новая ссылка')}</span></a>`;
+      }).join('');
     }
 
     function renderHomeTitles() {
@@ -995,6 +1063,10 @@
         .map(el => ({
           title: el.querySelector('strong')?.textContent?.trim() || 'Новая карточка',
           description: el.querySelector('span')?.textContent?.trim() || '',
+          titleSize: Number.parseInt(el.querySelector('strong')?.style.fontSize, 10) || 16,
+          titleAlign: ['left','center','right'].includes(el.querySelector('strong')?.style.textAlign) ? el.querySelector('strong').style.textAlign : 'left',
+          descriptionSize: Number.parseInt(el.querySelector('span')?.style.fontSize, 10) || 14,
+          descriptionAlign: ['left','center','right'].includes(el.querySelector('span')?.style.textAlign) ? el.querySelector('span').style.textAlign : 'left',
           href: el.tagName === 'A' ? (el.getAttribute('href') || '') : '',
           newTab: el.tagName === 'A' && el.getAttribute('target') === '_blank',
           extraClasses: [...el.classList].filter(c => !['resource-detail-card','external-card','internal-card'].includes(c))
@@ -1008,7 +1080,11 @@
       const isExternal = /^(https?:)?\/\//i.test(href) || /^(mailto:|tel:)/i.test(href);
       const classes = ['resource-detail-card', ...(href ? [isExternal ? 'external-card' : 'internal-card'] : []), ...extras]
         .filter((v, i, a) => a.indexOf(v) === i).join(' ');
-      const inner = `<strong>${escapeHtml(card.title || 'Новая карточка')}</strong><span>${escapeHtml(card.description || '')}</span>`;
+      const titleSize = [14,16,18,20,24,28,32].includes(Number(card.titleSize)) ? Number(card.titleSize) : 16;
+      const descriptionSize = [12,14,16,18,20,24].includes(Number(card.descriptionSize)) ? Number(card.descriptionSize) : 14;
+      const titleAlign = ['left','center','right'].includes(card.titleAlign) ? card.titleAlign : 'left';
+      const descriptionAlign = ['left','center','right'].includes(card.descriptionAlign) ? card.descriptionAlign : 'left';
+      const inner = `<strong style="font-size:${titleSize}px;text-align:${titleAlign}">${escapeHtml(card.title || 'Новая карточка')}</strong><span style="font-size:${descriptionSize}px;text-align:${descriptionAlign}">${escapeHtml(card.description || '')}</span>`;
       if (!href) return `<div class="${escapeHtml(classes)}">${inner}</div>`;
       const target = card.newTab || isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
       return `<a class="${escapeHtml(classes)}" href="${escapeHtml(href)}"${target}>${inner}</a>`;
@@ -1039,7 +1115,15 @@
             <input data-card-field="title" value="${escapeHtml(card.title || '')}" placeholder="Название карточки">
             <button class="resource-card-remove" type="button" title="Удалить карточку" aria-label="Удалить карточку">×</button>
           </div>
+          <div class="card-text-controls">
+            <label>Название · размер <select data-card-setting="titleSize"><option value="16" ${Number(card.titleSize || 16)===16?'selected':''}>16 px</option><option value="18" ${Number(card.titleSize || 16)===18?'selected':''}>18 px</option><option value="20" ${Number(card.titleSize || 16)===20?'selected':''}>20 px</option><option value="24" ${Number(card.titleSize || 16)===24?'selected':''}>24 px</option><option value="28" ${Number(card.titleSize || 16)===28?'selected':''}>28 px</option></select></label>
+            <label>Название · выравнивание <select data-card-setting="titleAlign"><option value="left" ${(!card.titleAlign||card.titleAlign==='left')?'selected':''}>Слева</option><option value="center" ${card.titleAlign==='center'?'selected':''}>По центру</option><option value="right" ${card.titleAlign==='right'?'selected':''}>Справа</option></select></label>
+          </div>
           <textarea data-card-field="description" placeholder="Описание">${escapeHtml(card.description || '')}</textarea>
+          <div class="card-text-controls">
+            <label>Описание · размер <select data-card-setting="descriptionSize"><option value="12" ${Number(card.descriptionSize || 14)===12?'selected':''}>12 px</option><option value="14" ${Number(card.descriptionSize || 14)===14?'selected':''}>14 px</option><option value="16" ${Number(card.descriptionSize || 14)===16?'selected':''}>16 px</option><option value="18" ${Number(card.descriptionSize || 14)===18?'selected':''}>18 px</option><option value="20" ${Number(card.descriptionSize || 14)===20?'selected':''}>20 px</option></select></label>
+            <label>Описание · выравнивание <select data-card-setting="descriptionAlign"><option value="left" ${(!card.descriptionAlign||card.descriptionAlign==='left')?'selected':''}>Слева</option><option value="center" ${card.descriptionAlign==='center'?'selected':''}>По центру</option><option value="right" ${card.descriptionAlign==='right'?'selected':''}>Справа</option></select></label>
+          </div>
           <input class="resource-card-href" data-card-field="href" value="${escapeHtml(card.href || '')}" placeholder="Ссылка, например https://... или requirements.html">
           <div class="resource-card-edit-meta">
             <span>Карточка ${i + 1}</span>
@@ -1048,16 +1132,23 @@
         </div>`).join('');
     }
 
-    resourceCardFields?.addEventListener('input', event => {
+    const updateResourceCard = event => {
       const row = event.target.closest('.resource-card-edit-row');
       if (!row) return;
       const i = Number(row.dataset.cardIndex);
       const card = resourceCards[i];
       if (!card) return;
       const field = event.target.dataset.cardField;
+      const setting = event.target.dataset.cardSetting;
       if (field === 'newTab') card.newTab = event.target.checked;
       else if (field) card[field] = event.target.value;
+      else if (setting) card[setting] = ['titleSize','descriptionSize'].includes(setting) ? Number(event.target.value) : event.target.value;
+      else return;
       syncResourceCardsToPreview();
+    };
+    resourceCardFields?.addEventListener('input', updateResourceCard);
+    resourceCardFields?.addEventListener('change', event => {
+      if (event.target.dataset.cardSetting) updateResourceCard(event);
     });
     resourceCardFields?.addEventListener('change', event => {
       if (event.target.dataset.cardField !== 'newTab') return;
@@ -1080,7 +1171,7 @@
     });
 
     resourceAddCard?.addEventListener('click', () => {
-      resourceCards.push({ title:'Новая карточка', description:'Описание карточки.', href:'', newTab:false, extraClasses:[] });
+      resourceCards.push({ title:'Новая карточка', description:'Описание карточки.', titleSize:16, titleAlign:'left', descriptionSize:14, descriptionAlign:'left', href:'', newTab:false, extraClasses:[] });
       renderResourceCardFields();
       syncResourceCardsToPreview();
       resourceCardFields?.querySelector(`[data-card-index="${resourceCards.length - 1}"] input[data-card-field="title"]`)?.focus();

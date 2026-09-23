@@ -81,6 +81,13 @@
               <button class="editor-tool is-accent" id="addImage">Фото с компьютера</button>
               <button class="editor-tool is-accent" id="addImageUrl">Фото по URL</button>
               <button class="editor-tool is-accent" id="addVideo">Видео YouTube / Vimeo</button>
+<div class="text-format-tools" aria-label="Размер и выравнивание текста">
+              <label>Размер <select data-font-size-for="lecture" aria-label="Размер шрифта"><option value="14">14 px</option><option value="16" selected>16 px</option><option value="18">18 px</option><option value="20">20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="32">32 px</option></select></label>
+              <span class="text-align-label">Выравнивание</span>
+              <button class="editor-tool" type="button" data-text-align-for="lecture" data-align="left" aria-label="По левому краю" title="По левому краю">≡←</button>
+              <button class="editor-tool" type="button" data-text-align-for="lecture" data-align="center" aria-label="По центру" title="По центру">≡</button>
+              <button class="editor-tool" type="button" data-text-align-for="lecture" data-align="right" aria-label="По правому краю" title="По правому краю">→≡</button>
+            </div>
               <button class="editor-tool editor-media-remove" id="removeMedia" type="button" disabled>Удалить медиа</button>
             </div>
             <input id="imageFileInput" type="file" accept="image/*" hidden>
@@ -117,6 +124,13 @@
               <button class="editor-tool" data-home-format="p">Абзац</button>
               <button class="editor-tool" data-home-format="ul">• Список</button>
               <button class="editor-tool" data-home-format="ol">1. Список</button>
+              <div class="text-format-tools" aria-label="Размер и выравнивание текста">
+                            <label>Размер <select data-font-size-for="home" aria-label="Размер шрифта"><option value="14">14 px</option><option value="16" selected>16 px</option><option value="18">18 px</option><option value="20">20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="32">32 px</option></select></label>
+                            <span class="text-align-label">Выравнивание</span>
+                            <button class="editor-tool" type="button" data-text-align-for="home" data-align="left" aria-label="По левому краю" title="По левому краю">≡←</button>
+                            <button class="editor-tool" type="button" data-text-align-for="home" data-align="center" aria-label="По центру" title="По центру">≡</button>
+                            <button class="editor-tool" type="button" data-text-align-for="home" data-align="right" aria-label="По правому краю" title="По правому краю">→≡</button>
+                          </div>
               <button class="editor-tool is-accent" id="homeAddLink">Ссылка</button>
             </div>
           </section>
@@ -163,6 +177,13 @@
               <button class="editor-tool" data-resource-format="blockquote">Цитата</button>
               <button class="editor-tool" data-resource-format="ul">• Список</button>
               <button class="editor-tool" data-resource-format="ol">1. Список</button>
+              <div class="text-format-tools" aria-label="Размер и выравнивание текста">
+                            <label>Размер <select data-font-size-for="resource" aria-label="Размер шрифта"><option value="14">14 px</option><option value="16" selected>16 px</option><option value="18">18 px</option><option value="20">20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="32">32 px</option></select></label>
+                            <span class="text-align-label">Выравнивание</span>
+                            <button class="editor-tool" type="button" data-text-align-for="resource" data-align="left" aria-label="По левому краю" title="По левому краю">≡←</button>
+                            <button class="editor-tool" type="button" data-text-align-for="resource" data-align="center" aria-label="По центру" title="По центру">≡</button>
+                            <button class="editor-tool" type="button" data-text-align-for="resource" data-align="right" aria-label="По правому краю" title="По правому краю">→≡</button>
+                          </div>
               <button class="editor-tool is-accent" id="resourceEditLink">Ссылка</button>
             </div>
             <p class="editor-help">Текст внутри карточек тоже можно менять прямо в предпросмотре. Чтобы поменять адрес карточки или текстовой ссылки, поставьте курсор внутрь неё и нажмите «Ссылка».</p>
