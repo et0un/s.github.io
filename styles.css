@@ -359,3 +359,91 @@ a.resource-detail-card.internal-card:hover:after{transform:translateX(3px)}
 @media (min-width: 761px) {
   .home-page .section.about .prose { width: calc(100% - 20px); }
 }
+
+
+/* ---------- typography sync: resource pages use the same rhythm as lectures ---------- */
+.resource-page .resource-article{
+  width:min(1080px,100%);
+  margin:0;
+}
+.resource-page .resource-article h1{
+  font-size:clamp(44px,5.2vw,76px);
+  line-height:.98;
+  letter-spacing:-.045em;
+  margin:0 0 18px;
+  color:#fff;
+}
+.resource-page .resource-article .resource-lead{
+  max-width:940px!important;
+  font-size:clamp(18px,1.7vw,22px)!important;
+  line-height:1.62!important;
+  color:#bdbdbd!important;
+  margin:0 0 34px!important;
+}
+.resource-page .resource-article h2{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  font-size:clamp(26px,2.6vw,38px);
+  line-height:1.1;
+  letter-spacing:-.025em;
+  margin:48px 0 18px;
+  color:#fff;
+}
+.resource-page .resource-article h2:after{
+  content:"";
+  height:1px;
+  background:#404040;
+  flex:1;
+}
+.resource-page .resource-article h3{
+  font-size:22px;
+  line-height:1.25;
+  margin:34px 0 12px;
+  color:#fff;
+}
+.resource-page .resource-article p,
+.resource-page .resource-article li,
+.resource-page .resource-article > div:not(.resource-kicker):not(.resource-card-grid){
+  max-width:940px;
+  font-size:17px;
+  line-height:1.72;
+  color:#bdbdbd;
+}
+.resource-page .resource-article p,
+.resource-page .resource-article > div:not(.resource-kicker):not(.resource-card-grid){
+  margin:0 0 18px;
+}
+.resource-page .resource-article ul,
+.resource-page .resource-article ol{
+  max-width:940px;
+  padding-left:24px;
+  margin:14px 0 24px;
+}
+.resource-page .resource-article li + li{margin-top:5px}
+.resource-page .resource-article strong{color:#f0f0f0}
+.resource-page .resource-article blockquote{
+  max-width:920px;
+  margin:30px 0;
+  padding:4px 0 4px 20px;
+  border-left:2px solid #bdbdbd;
+  color:#d8d8d8;
+  font-size:17px;
+  font-style:italic;
+  line-height:1.65;
+}
+.resource-page .resource-article a:not(.resource-detail-card){
+  color:#f0f0f0;
+  text-decoration-color:#666;
+  text-underline-offset:4px;
+}
+.resource-page .resource-article a:not(.resource-detail-card):hover{color:#fff;text-decoration-color:#fff}
+.resource-page .resource-card-grid{margin-top:24px}
+
+@media(max-width:520px){
+  .resource-page .resource-article h1{font-size:38px}
+  .resource-page .resource-article h2:after{display:none}
+  .resource-page .resource-article p,
+  .resource-page .resource-article li,
+  .resource-page .resource-article > div:not(.resource-kicker):not(.resource-card-grid){font-size:16px;line-height:1.68}
+}
