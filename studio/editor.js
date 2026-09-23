@@ -1206,19 +1206,35 @@
     function buildResourceHtml() {
       if (!publishedResourceSource) return '';
       const doc = new DOMParser().parseFromString(publishedResourceSource, 'text/html');
-      const article = doc.querySelector('.resource-article');
-      if (!article) return '';
-      const h1 = article.querySelector('h1');
-      if (h1) h1.textContent = resourceTitle.value.trim() || 'Страница';
-      let remove = false;
-      [...article.children].forEach(node => {
-        if (node === h1) { remove = true; return; }
-        if (remove) node.remove();
-      });
+      const main = doc.querySelector('.resource-main');
+      const oldArticle = doc.querySelector('.resource-article');
+      if (!main || !oldArticle) return '';
+
+      // Rebuild the article from scratch. This deliberately removes any stale
+      // fragments left by an older Studio version, so the published page is an
+      // exact mirror of the current preview instead of accumulating old text.
+      const article = doc.createElement('article');
+      article.className = 'resource-article';
+
+      const oldKicker = oldArticle.querySelector('.resource-kicker');
+      const kicker = doc.createElement('div');
+      kicker.className = 'resource-kicker';
+      kicker.textContent = oldKicker?.textContent?.trim() || 'ПОЛЕЗНЫЕ ССЫЛКИ';
+      article.appendChild(kicker);
+
+      const h1 = doc.createElement('h1');
+      h1.textContent = resourceTitle.value.trim() || 'Страница';
+      article.appendChild(h1);
+
       const tmp = doc.createElement('div');
       tmp.innerHTML = resourceEditable.innerHTML.trim();
       normalizeResourceBlocks(tmp);
       [...tmp.childNodes].forEach(node => article.appendChild(node));
+
+      // Replace everything inside resource-main, including accidental orphaned
+      // nodes that could survive previous publishes.
+      main.replaceChildren(article);
+
       const title = doc.querySelector('title');
       if (title) title.textContent = `${resourceTitle.value.trim() || 'Страница'} — ${courseName}`;
       const meta = doc.querySelector('meta[name="description"]');
