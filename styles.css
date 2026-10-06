@@ -16,7 +16,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:#070707;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#070707;color:var(--text);font-family:var(--course-font,Inter),ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
 
 /* ---------- homepage ---------- */
@@ -479,4 +479,31 @@ a.resource-detail-card.internal-card:hover:after{transform:translateX(3px)}
 @media(min-width:961px){
   .lecture-main{padding-top:26px}
   .resource-main{padding-top:28px}
+}
+
+.thumb.has-thumbnail:before,.thumb.has-thumbnail:after{display:none}
+.thumb.has-thumbnail img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* Shared course content: media, captions and code keep the same layout on every page. */
+.media-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin:28px auto 34px;max-width:100%;clear:both}
+.media-layout[data-columns="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.media-layout>.embedded-media{margin:0;width:100%;min-width:0}
+.embedded-media{max-width:100%;margin-left:auto;margin-right:auto}
+.embedded-media img,.embedded-media video{display:block;width:100%;max-width:100%;height:auto;border:1px solid #303030;border-radius:8px;background:#0d0d0d}
+.embedded-media figcaption{margin-top:10px;color:#a8a8a8;font-size:14px;line-height:1.55;text-align:center;overflow-wrap:anywhere;font-style:normal}
+.embedded-media figcaption:empty{display:none}
+.course-code{position:relative;margin:24px 0;padding:42px 20px 20px;border:1px solid #383838;border-radius:10px;background:#121212;color:#e5e5e5;overflow:auto;max-width:100%;tab-size:2;white-space:pre;font:14px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;text-align:left}
+.course-code:before{content:attr(data-language);display:block;position:absolute;left:20px;top:10px;color:#a8a8a8;font:12px/1.5 ui-sans-serif,system-ui,sans-serif}
+.course-code code{font:inherit;color:inherit;background:none;white-space:pre}
+.code-copy{position:absolute;top:8px;right:10px;padding:3px 8px;border:1px solid #454545;border-radius:5px;background:#1d1d1d;color:#ccc;font:12px/1.5 system-ui,sans-serif;cursor:pointer}
+/* Text pasted at the editing root and Chrome's DIV paragraphs share paragraph defaults. */
+.editor-content,.editor-content>div:not(.media-layout):not(.resource-card-grid){color:#bdbdbd;font-size:18px;line-height:1.72}
+.prose>div:not(.media-layout){color:inherit;line-height:inherit}
+.lecture-article span[style*="color"] strong,.lecture-article span[style*="color"] b,
+.resource-article span[style*="color"] strong,.resource-article span[style*="color"] b{color:inherit}
+@media(max-width:600px){
+  .media-layout[data-columns="2"]{grid-template-columns:minmax(0,1fr)}
+  .media-layout{width:100%!important;gap:18px}
+  .embedded-media{width:100%!important}
+  .course-code{font-size:13px;padding-left:14px;padding-right:14px}
 }
