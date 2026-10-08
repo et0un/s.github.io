@@ -259,3 +259,36 @@ button{cursor:pointer}
 .resource-editor-content>blockquote,
 .resource-editor-content>div:not(.resource-card-grid){max-width:none!important}
 .resource-editor-content .resource-card-grid{width:100%;max-width:none}
+
+
+/* Keep content typography identical to the published reading area. */
+.editor-preview-shell :is(.lecture-article,.resource-article) h2{align-items:baseline;line-height:1.2;margin:34px 0 14px}
+.editor-preview-shell :is(.lecture-article,.resource-article) h2:after{align-self:baseline;transform:translateY(-.32em);min-width:24px}
+.editor-preview-shell :is(.lecture-article,.resource-article) h3{line-height:1.3;margin:26px 0 12px}
+.editor-preview-shell :is(.lecture-article,.resource-article) p{margin-bottom:14px}
+.editor-preview-shell :is(.lecture-article,.resource-article) :is(ul,ol){margin:12px 0 18px}
+.editor-preview-shell :is(.lecture-article,.resource-article) blockquote{margin:22px 0}
+.editor-preview-shell :is(.lecture-article,.resource-article) blockquote>:last-child{margin-bottom:0}
+.editor-preview-shell .embedded-media,.editor-preview-shell .media-layout{margin-top:20px;margin-bottom:24px}
+.editor-preview-shell .media-layout>.embedded-media{margin:0}
+.editor-preview-shell :is(figure,.media-layout,.media-pair)+h2{margin-top:28px}
+.editor-preview-shell h2+figure{margin-top:16px}
+.editor-content{padding-bottom:32px}
+.resource-editor-content{padding-bottom:32px}
+.editor-content p:has(>br:only-child),.resource-editor-content p:has(>br:only-child){margin-block:0;line-height:1.2}
+
+
+
+/* Keep selected media controls in sight while the article is scrolled. */
+.media-inspector{position:fixed;right:20px;bottom:20px;z-index:90;width:320px;max-height:70vh;overflow:auto;padding:16px;background:#111;border:1px solid #555;border-radius:12px;box-shadow:0 12px 40px #0009}
+.media-inspector[hidden]{display:none!important}
+.media-inspector-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.media-inspector-head h2{margin:0;font-size:17px}
+.media-inspector .editor-actions{flex-wrap:wrap}
+.editor-preview-shell figure.embedded-media.is-selected-media{outline:2px solid var(--editor-accent);outline-offset:4px}
+.editor-preview-shell figure.embedded-media{cursor:grab}
+.editor-preview-shell figure.embedded-media img{height:auto;max-width:100%}
+.editor-preview-shell figure.embedded-media figcaption{cursor:text}
+.editor-preview-shell .video-frame iframe{pointer-events:none}
+@media(max-width:820px){.media-inspector{right:10px;bottom:10px;width:min(320px,calc(100vw - 20px));max-height:50vh}}
+
