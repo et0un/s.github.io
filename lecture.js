@@ -26,9 +26,10 @@ if (list) {
   list.innerHTML = topics.map((topic, i) => {
     const active = topic.slug === currentSlug ? ' is-active' : '';
     const vars = `--x:${35 + (i*17)%45}%;--y:${28 + (i*23)%46}%;--r:${(i*37)%360}deg;--rot:${-28 + (i*19)%56}deg`;
+    const thumb = typeof topic.thumbnail === 'string' && topic.thumbnail.startsWith('assets/') ? '../' + topic.thumbnail.replace(/[<>"']/g, '') : '';
     return `<a class="sidebar-topic${active}" href="${topic.slug}.html" ${active ? 'aria-current="page"' : ''}>
       <span class="sidebar-number">${topicNumber(i)}</span>
-      <span class="sidebar-thumb" style="${vars}"></span>
+      <span class="sidebar-thumb" style="${vars}">${thumb ? `<img src="${thumb}" alt="" loading="lazy" style="display:block;position:relative;z-index:1;width:100%;height:100%;object-fit:cover">` : ''}</span>
       <span class="sidebar-copy"><span class="sidebar-title">${topic.title}</span></span>
     </a>`;
   }).join('');
