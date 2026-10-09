@@ -53,7 +53,7 @@ a{color:inherit}
 .topic-title{padding:16px 22px;font-size:17px;line-height:1.3}
 .tags{display:flex;gap:9px;flex-wrap:wrap;padding:12px}
 .tag{display:inline-flex;align-items:center;padding:6px 11px;border-radius:7px;font-size:12px;background:#333;line-height:1;white-space:nowrap}
-.actual{background:#164d49;color:#cffff7}
+.tag.actual{background:var(--orange);color:#092d27;font-weight:650}
 .theory{background:var(--blue);color:#bfe5ff}
 .practice,.soft{background:var(--purple);color:#ead6ff}
 .home{background:var(--green);color:#c7ffdb}
@@ -515,3 +515,4 @@ a.resource-detail-card.internal-card:hover:after{transform:translateX(3px)}
 .lecture-article .table-wrap th{font-weight:600;color:inherit;background:#151515}
 .lecture-article .table-wrap td:first-child{width:25%;min-width:140px}
 @media(max-width:760px){.lecture-article .table-wrap table{font-size:15px;min-width:500px}.lecture-article .table-wrap th,.lecture-article .table-wrap td{padding:12px}}
+
