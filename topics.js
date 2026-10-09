@@ -12,26 +12,29 @@ window.COURSE_TOPICS = [
     "title": "Пространство и поведение: интерактивный нарратив и логика выбора",
     "tags": [
       "Теория",
-      "Проектирование"
+      "Проектирование",
+      "актуально"
     ],
-    "thumbnail": "assets/images/topic-narrative-sculpted.svg"
+    "thumbnail": "assets/images/topic-narrative-sculpted-v2.svg"
   },
   {
     "slug": "03-live-resolume",
     "title": "Live-перформанс в Resolume",
     "tags": [
       "Resolume",
-      "Софт"
+      "Софт",
+      "актуально"
     ],
-    "thumbnail": "assets/images/topic-resolume-sculpted.svg"
+    "thumbnail": "assets/images/topic-resolume-sculpted-v2.svg"
   },
   {
     "slug": "04-touchdesigner",
     "title": "TouchDesigner и визуальное программирование",
     "tags": [
       "TouchDesigner",
-      "Софт"
+      "Софт",
+      "актуально"
     ],
-    "thumbnail": "assets/images/topic-touch-sculpted.svg"
+    "thumbnail": "assets/images/topic-touch-sculpted-v2.svg"
   }
 ];
