@@ -507,3 +507,11 @@ a.resource-detail-card.internal-card:hover:after{transform:translateX(3px)}
   .embedded-media{width:100%!important}
   .course-code{font-size:13px;padding-left:14px;padding-right:14px}
 }
+
+/* Readable comparisons in lectures and Studio previews. */
+.lecture-article .table-wrap{width:100%;overflow-x:auto;margin:24px 0}
+.lecture-article .table-wrap table{width:100%;border-collapse:collapse;color:inherit;font-size:17px;line-height:1.55}
+.lecture-article .table-wrap th,.lecture-article .table-wrap td{text-align:left;vertical-align:top;padding:14px 18px;border-bottom:1px solid #303030}
+.lecture-article .table-wrap th{font-weight:600;color:inherit;background:#151515}
+.lecture-article .table-wrap td:first-child{width:25%;min-width:140px}
+@media(max-width:760px){.lecture-article .table-wrap table{font-size:15px;min-width:500px}.lecture-article .table-wrap th,.lecture-article .table-wrap td{padding:12px}}
