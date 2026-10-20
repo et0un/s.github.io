@@ -45,5 +45,15 @@ window.COURSE_TOPICS = [
       "Актуально"
     ],
     "thumbnail": "assets/images/topic-touch-sculpted-v2.svg"
+  },
+  {
+    "slug": "06-web-projects",
+    "title": "Среды разработки веб-проектов",
+    "tags": [
+      "Софт",
+      "Проектирование",
+      "Актуально"
+    ],
+    "thumbnail": "assets/images/topic-web-sculpted.svg"
   }
 ];
