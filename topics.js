@@ -51,8 +51,7 @@ window.COURSE_TOPICS = [
     "title": "Среды разработки веб-проектов",
     "tags": [
       "Софт",
-      "Проектирование",
-      "Актуально"
+      "Проектирование"
     ],
     "thumbnail": "assets/images/topic-web-sculpted.svg"
   }
