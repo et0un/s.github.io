@@ -12,10 +12,9 @@ window.COURSE_TOPICS = [
     "title": "Пространство и поведение: интерактивный нарратив и логика выбора",
     "tags": [
       "Теория",
-      "Проектирование",
-      "Актуально"
+      "Проектирование"
     ],
-    "thumbnail": "assets/images/topic-narrative-sculpted-v2.svg"
+    "thumbnail": "assets/images/topic-touch-sculpted-v2.svg"
   },
   {
     "slug": "03-live-resolume",
