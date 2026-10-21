@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+<title id="title">Игровой мир</title><desc id="desc">Минималистичное объёмное пространство: платформы, светящаяся сфера и траектория движения.</desc>
+<defs><radialGradient id="bg"><stop stop-color="#202b24"/><stop offset="1" stop-color="#0a0e0b"/></radialGradient><linearGradient id="top" x2=".9" y2="1"><stop stop-color="#8fa896"/><stop offset="1" stop-color="#3c5143"/></linearGradient><linearGradient id="side"><stop stop-color="#344339"/><stop offset="1" stop-color="#151d18"/></linearGradient><radialGradient id="ball" cx=".35" cy=".24"><stop stop-color="#eff8ee"/><stop offset=".38" stop-color="#b2cab5"/><stop offset="1" stop-color="#3b5744"/></radialGradient><filter id="blur"><feGaussianBlur stdDeviation="20"/></filter></defs>
+<rect width="1200" height="720" fill="url(#bg)"/>
+<ellipse cx="620" cy="592" rx="350" ry="46" fill="#000" opacity=".55" filter="url(#blur)"/>
+<g fill="none" stroke="#70917a" opacity=".14"><path d="M200 448 600 217 1000 448 600 679Z"/><path d="m300 390 400 232m-300-290 400 232M500 274l400 232M300 506 700 274M400 564 800 332M500 622 900 390"/></g>
+<path d="m230 426 238-138 240 138-240 139Z" fill="url(#top)"/><path d="m230 426 238 139v66L230 493Z" fill="url(#side)"/><path d="m468 565 240-139v67L468 631Z" fill="#25382d"/>
+<path d="m685 345 155-89 155 89-155 90Z" fill="url(#top)"/><path d="m685 345 155 90v71l-155-90Z" fill="url(#side)"/><path d="m840 435 155-90v71l-155 90Z" fill="#25382d"/>
+<g fill="none" stroke="#afc9b5" stroke-width="1.5" opacity=".4"><path d="m230 426 238 139 240-139M468 565v66M685 345l155 90 155-90"/></g>
+<ellipse cx="464" cy="426" rx="68" ry="23" fill="#14231a" opacity=".65"/>
+<path d="M463 334C535 114 738 102 840 281" fill="none" stroke="#9db8a4" stroke-width="2" stroke-dasharray="5 12" opacity=".55"/>
+<circle cx="461" cy="322" r="64" fill="url(#ball)"/>
+<g fill="none" stroke="#bed3c1" stroke-width="2" opacity=".8"><path d="m817 250 23 13 23-13v-27l-23-13-23 13Z"/><path d="m817 223 23 13 23-13m-23 13v27"/></g>
+</svg>
+

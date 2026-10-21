@@ -54,5 +54,15 @@ window.COURSE_TOPICS = [
       "Проектирование"
     ],
     "thumbnail": "assets/images/topic-web-sculpted.svg"
+  },
+  {
+    "slug": "07-game-engines",
+    "title": "Игровые движки: игры, интерактивные миры и инсталляции",
+    "tags": [
+      "Теория",
+      "Софт",
+      "Игровые движки"
+    ],
+    "thumbnail": "assets/images/topic-game-engines.svg"
   }
 ];
