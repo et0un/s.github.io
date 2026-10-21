@@ -53,7 +53,7 @@ window.COURSE_TOPICS = [
       "Софт",
       "Проектирование"
     ],
-    "thumbnail": "assets/images/topic-web-sculpted-mono.svg"
+    "thumbnail": "assets/images/topic-web-browser-v2.svg"
   },
   {
     "slug": "07-game-engines",
@@ -63,6 +63,6 @@ window.COURSE_TOPICS = [
       "Софт",
       "Игровые движки"
     ],
-    "thumbnail": "assets/images/topic-game-engines-mono.svg"
+    "thumbnail": "assets/images/topic-game-controller-v2.svg"
   }
 ];
