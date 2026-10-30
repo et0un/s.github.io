@@ -1,9 +1,9 @@
 const topics = window.COURSE_TOPICS || [];
 const cls = t => t === 'Актуально' ? 'actual' : t === 'Теория' ? 'theory' : t === 'Практика' ? 'practice' : t === 'Софт' ? 'soft' : t === 'Д/з' ? 'home' : t === 'Зачёт' ? 'coursework' : '';
 const list = document.querySelector('#topicList');
-const escapeTopicAttribute = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const escapeTopicAttribute = value => String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const topicThumbnailUrl = value => typeof value === 'string' && value.trim() && !/[\u0000-\u001f]/.test(value) && (!/^[a-z][a-z0-9+.-]*:/i.test(value) || /^https?:/i.test(value)) ? value : '';
-if (list) {
+if (list && topics.length) {
   list.innerHTML = topics.map((topic, i) => {
     const vars = `--x:${35 + (i*17)%45}%;--y:${28 + (i*23)%46}%;--r:${(i*37)%360}deg;--rot:${-28 + (i*19)%56}deg`;
     const thumbnail = topicThumbnailUrl(topic.thumbnail);
