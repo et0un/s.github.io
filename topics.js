@@ -53,7 +53,7 @@ window.COURSE_TOPICS = [
       "Софт",
       "Проектирование"
     ],
-    "thumbnail": "assets/images/topic-web-browser-v2.svg"
+    "thumbnail": "assets/images/topic-web-sculpted.svg"
   },
   {
     "slug": "07-game-engines",
