@@ -516,3 +516,20 @@ a.resource-detail-card.internal-card:hover:after{transform:translateX(3px)}
 .lecture-article .table-wrap td:first-child{width:25%;min-width:140px}
 @media(max-width:760px){.lecture-article .table-wrap table{font-size:15px;min-width:500px}.lecture-article .table-wrap th,.lecture-article .table-wrap td{padding:12px}}
 
+
+/* Explicit card sizing avoids percentage-height grid items on tablet Safari. */
+.home-page #topicList .topic{min-width:0;min-height:112px;color:#f4f4f4}
+.home-page #topicList .topic-title{min-width:0;overflow-wrap:break-word;color:#f4f4f4}
+.home-page #topicList .tags{min-width:0}
+.home-page #topicList .thumb{height:112px;min-height:112px;align-self:center}
+.home-page #topicList .thumb.has-thumbnail img{position:static;display:block;width:100%;height:112px;object-fit:contain}
+@media(max-width:1100px){
+  .home-page #topicList .topic{grid-template-columns:104px minmax(0,1fr) 28px;grid-template-rows:auto auto}
+  .home-page #topicList .thumb{grid-column:1;grid-row:1 / 3}
+  .home-page #topicList .topic-title{grid-column:2;grid-row:1;padding:14px 14px 6px}
+  .home-page #topicList .tags{grid-column:2;grid-row:2;padding:4px 14px 14px}
+  .home-page #topicList .go{grid-column:3;grid-row:1 / 3}
+}
+@media(max-width:520px){
+  .home-page #topicList .topic{grid-template-columns:80px minmax(0,1fr) 24px}
+}
