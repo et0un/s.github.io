@@ -21,8 +21,7 @@ window.COURSE_TOPICS = [
     "title": "Live-перформанс в Resolume",
     "tags": [
       "Resolume",
-      "Софт",
-      "Актуально"
+      "Софт"
     ],
     "thumbnail": "assets/images/topic-resolume-sculpted-v2.svg"
   },
@@ -31,8 +30,7 @@ window.COURSE_TOPICS = [
     "title": "Как перестать бояться кода",
     "tags": [
       "Теория",
-      "Проектирование",
-      "Актуально"
+      "Проектирование"
     ],
     "thumbnail": "assets/images/topic-code-sculpted.svg"
   },
@@ -41,8 +39,7 @@ window.COURSE_TOPICS = [
     "title": "TouchDesigner и визуальное программирование",
     "tags": [
       "TouchDesigner",
-      "Софт",
-      "Актуально"
+      "Софт"
     ],
     "thumbnail": "assets/images/topic-touch-sculpted-v2.svg"
   },
@@ -51,7 +48,8 @@ window.COURSE_TOPICS = [
     "title": "Среды разработки веб-проектов",
     "tags": [
       "Софт",
-      "Проектирование"
+      "Проектирование",
+      "Актуально"
     ],
     "thumbnail": "assets/images/topic-web-sculpted.svg"
   },
@@ -61,7 +59,8 @@ window.COURSE_TOPICS = [
     "tags": [
       "Теория",
       "Софт",
-      "Игровые движки"
+      "Игровые движки",
+      "Актуально"
     ],
     "thumbnail": "assets/images/topic-game-controller-v2.svg"
   }
