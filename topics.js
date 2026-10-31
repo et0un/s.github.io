@@ -55,12 +55,11 @@ window.COURSE_TOPICS = [
   },
   {
     "slug": "07-game-engines",
-    "title": "Игровые движки",
+    "title": "Игровые движки: игры, интерактивные миры и инсталляции",
     "tags": [
       "Теория",
       "Софт",
-      "Игровые движки",
-      "Актуально"
+      "Игровые движки"
     ],
     "thumbnail": "assets/images/topic-game-controller-v2.svg"
   }
