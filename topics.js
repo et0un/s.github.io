@@ -48,10 +48,9 @@ window.COURSE_TOPICS = [
     "title": "Среды разработки веб-проектов",
     "tags": [
       "Софт",
-      "Проектирование",
-      "Актуально"
+      "Проектирование"
     ],
-    "thumbnail": "assets/images/topic-web-sculpted.svg"
+    "thumbnail": "assets/images/topic-web-sculpted.svg?v=2"
   },
   {
     "slug": "07-game-engines",
