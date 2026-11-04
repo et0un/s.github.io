@@ -61,5 +61,25 @@ window.COURSE_TOPICS = [
       "Игровые движки"
     ],
     "thumbnail": "assets/images/topic-game-controller-v2.svg"
+  },
+  {
+    "slug": "08-transfer-protocols",
+    "title": "Протоколы передачи",
+    "tags": [
+      "Теория",
+      "Практика",
+      "TouchDesigner"
+    ],
+    "thumbnail": "assets/images/topic-protocols-sculpted.svg"
+  },
+  {
+    "slug": "09-realtime-graphics",
+    "title": "Как формируется графика в реальном времени",
+    "tags": [
+      "Теория",
+      "Практика",
+      "TouchDesigner"
+    ],
+    "thumbnail": "assets/images/topic-realtime-graphics-sculpted.svg"
   }
 ];
