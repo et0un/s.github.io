@@ -48,28 +48,18 @@ window.COURSE_TOPICS = [
     "title": "Среды разработки веб-проектов",
     "tags": [
       "Софт",
-      "Проектирование"
+      "Веб"
     ],
-    "thumbnail": "assets/images/topic-web-sculpted.svg?v=2"
+    "thumbnail": "assets/images/topic-web-sculpted.svg"
   },
   {
     "slug": "07-game-engines",
-    "title": "Игровые движки: игры, интерактивные миры и инсталляции",
+    "title": "Игровые движки",
     "tags": [
       "Теория",
       "Софт",
       "Игровые движки"
     ],
     "thumbnail": "assets/images/topic-game-controller-v2.svg"
-  },
-  {
-    "slug": "08-transfer-protocols",
-    "title": "Протоколы передачи",
-    "tags": [
-      "Теория",
-      "Практика",
-      "TouchDesigner"
-    ],
-    "thumbnail": "assets/images/topic-protocols-sculpted.svg"
   }
 ];
