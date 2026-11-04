@@ -61,5 +61,15 @@ window.COURSE_TOPICS = [
       "Игровые движки"
     ],
     "thumbnail": "assets/images/topic-game-controller-v2.svg"
+  },
+  {
+    "slug": "08-transfer-protocols",
+    "title": "Протоколы передачи",
+    "tags": [
+      "Теория",
+      "Практика",
+      "TouchDesigner"
+    ],
+    "thumbnail": "assets/images/topic-protocols-sculpted.svg"
   }
 ];

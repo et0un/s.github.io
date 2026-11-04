@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Лекция курса «Среды разработки интерактивного контента»">
+  <title>Протоколы передачи | Среды разработки интерактивного контента</title>
+  <link rel="stylesheet" href="../styles.css?v=24">
+  <style>
+    .protocol-flow { margin: 1.4rem 0 1.75rem; }
+    .protocol-flow figcaption { color: #ddd; margin-bottom: .65rem; font-weight: 600; }
+    .lecture-article .protocol-flow ol {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      padding: 0;
+      list-style: none;
+    }
+    .lecture-article .protocol-flow li {
+      flex: 1 1 8.5rem;
+      padding: .7rem .8rem;
+      border: 1px solid #3a3a3a;
+      border-radius: 8px;
+      background: #171717;
+      margin: 0;
+      color: #e4e4e4;
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+    .lecture-article .protocol-flow li:not(:first-child)::before {
+      content: "→ ";
+      color: #a7beb1;
+    }
+    .lecture-article .table-wrap {
+      border: 1px solid #333;
+      border-radius: 8px;
+    }
+    .lecture-article .table-wrap tbody tr:nth-child(even) { background: #151515; }
+  </style>
+</head>
+<body class="lecture-page" data-topic="08-transfer-protocols">
+<header class="lecture-topbar">
+  <nav aria-label="Главная навигация">
+    <a href="../index.html">Главная</a>
+    <a href="../index.html#about">О курсе</a>
+    <a href="../index.html#links">Ссылки</a>
+    <a class="active" href="../index.html#topics">Темы</a>
+  </nav>
+</header>
+
+<button class="topics-toggle" type="button" aria-expanded="false">
+  <strong>Темы курса</strong><span>Темы · открыть</span>
+</button>
+
+<div class="lecture-shell">
+  <aside class="lecture-sidebar" aria-label="Темы курса">
+    <div class="sidebar-head">
+      <span>ТЕМЫ КУРСА</span>
+      <button class="sidebar-close" type="button" aria-label="Закрыть список тем">×</button>
+    </div>
+    <div id="lectureTopics" class="lecture-topic-list"></div>
+  </aside>
+
+  <main class="lecture-main">
+    <article class="lecture-article">
+      <!-- Номер, название и теги ниже автоматически заменит lecture.js -->
+      <div class="lecture-kicker">ТЕМА</div>
+      <h1>Протоколы передачи</h1>
+      <div class="tags"></div>
+
+      
+<p class="lead">Игрок входит в зону в Unreal Engine, и на соседнем экране меняется графика. Зритель двигает ползунок в браузере, и в зале плавно загорается свет. В каждом случае одна система передаёт данные, а другая решает, как на них отреагировать. Разберём эту связь от одного сообщения до адресов реальных приборов.</p>
+<nav aria-label="Содержание лекции"><ul>
+<li><a href="#language">Как среды договариваются</a></li>
+<li><a href="#choose">Как выбрать протокол</a></li>
+<li><a href="#osc">OSC между Unreal и TouchDesigner</a></li>
+<li><a href="#websocket">Веб-пульт для TouchDesigner</a></li>
+<li><a href="#dmx">DMX512 и устройство световой линии</a></li>
+<li><a href="#patch">Адресация, режимы и патч</a></li>
+<li><a href="#lighting">От TouchDesigner к прибору</a></li>
+<li><a href="#cases">Инсталляции и работа с площадкой</a></li>
+<li><a href="#practice">Практика и диагностика</a></li>
+</ul></nav>
+
+<h2 id="language">Как среды договариваются</h2>
+<p>Сцена в Unreal знает, где находится игрок. TouchDesigner умеет строить графику и превращать числа в управляющие каналы. Световой прибор читает последовательность значений из своей линии. Чтобы связать эти задачи, нужно решить, где рождается сигнал, как он передаётся и что означает в каждом звене.</p>
+<figure class="protocol-flow"><figcaption>Сигнал проходит через пять звеньев</figcaption><ol><li>Источник<br>Действие, датчик или таймлайн</li><li>Сообщение<br>Адрес, имя и значение</li><li>Передача<br>Выбранный протокол</li><li>Обработка<br>Проверка и преобразование</li><li>Результат<br>Графика, звук или свет</li></ol></figure>
+<p>Полезно разделять <strong>транспорт</strong>, <strong>формат данных</strong> и <strong>смысл сообщения</strong>. Например, браузер держит соединение WebSocket, передаёт текст в формате JSON, а TouchDesigner читает поле <code>value</code> как яркость от 0 до 1. Программы понимают JSON, но правило «1 означает максимальную яркость текущей сцены» устанавливает команда проекта.</p>
+<p>До сборки договоритесь об имени сигнала, диапазоне, единицах и направлении передачи. Если один человек передаёт цвет в 0–255, а другой ждёт 0–1, настройки связи могут быть правильными, но результат будет выглядеть сломанным. Удобно записать рядом пример сообщения и ожидаемую реакцию.</p>
+<div class="table-wrap"><table><thead><tr><th>Тип сигнала</th><th>Пример</th><th>Что предусмотреть</th></tr></thead><tbody>
+<tr><td>Событие</td><td>Посетитель вошёл в зону.</td><td>Нужно ли подтверждение и как обработать повтор?</td></tr>
+<tr><td>Состояние</td><td>Текущая сцена называется <code>intro</code>.</td><td>После подключения получатель должен узнать, какая сцена активна.</td></tr>
+<tr><td>Поток значений</td><td>Положение ручки меняется от 0 до 1.</td><td>Ограничьте частоту, определите поведение при паузе и сгладьте скачки.</td></tr>
+<tr><td>Поток кадров</td><td>Видео из Unreal поступает в микшер.</td><td>Согласуйте размер, частоту кадров, задержку и возможности сети или видеовыхода.</td></tr>
+</tbody></table></div>
+<h3>IP и порт</h3>
+<p>IP указывает, куда отправлять данные. Порт помогает выбрать приложение или службу на этом устройстве. При первом тесте на одном компьютере используйте адрес <code>127.0.0.1</code>. Если TouchDesigner запущен на другом компьютере, укажите его сетевой IP. Когда веб-пульт открыт на телефоне, <code>localhost</code> указывает на телефон, поэтому в адресе страницы нужен IP компьютера с TouchDesigner.</p>
+<p>В локальной сети проверьте доступ между устройствами, правильный сетевой интерфейс и разрешение на нужный входящий порт. При нескольких приложениях на одном компьютере проверьте, какой процесс уже слушает этот порт. Номера 9000 и 9980 в этой лекции выбраны для примеров.</p>
+
+<h2 id="choose">Как выбрать протокол</h2>
+<div class="table-wrap"><table><thead><tr><th>Что нужно передать</th><th>Подход</th><th>Что важно на практике</th></tr></thead><tbody>
+<tr><td>События и параметры между приложениями</td><td><strong>OSC</strong>, часто поверх UDP</td><td>У сообщения есть строковый адрес и аргументы. Удобно для локального управления. При UDP потерянный пакет автоматически не пересылается.</td></tr>
+<tr><td>Кнопки, ноты, ручки физического контроллера</td><td><strong>MIDI</strong></td><td>Согласуйте устройство, MIDI-канал и тип сообщения. В обычном MIDI 1.0 сообщение Control Change несёт значение 0–127.</td></tr>
+<tr><td>Запрос к сервису или настройка</td><td><strong>HTTP</strong> и API</td><td>Один запрос получает ответ. Подходит для выдачи страницы, чтения расписания, отправки формы.</td></tr>
+<tr><td>Двусторонний обмен браузера и приложения</td><td><strong>WebSocket</strong></td><td>После подключения обе стороны могут отправлять сообщения. Удобно для пульта и обратной связи. Определите формат и сценарий переподключения.</td></tr>
+<tr><td>События от многих датчиков или сервисов</td><td><strong>MQTT</strong></td><td>Устройства публикуют сообщения в темы через брокер, а получатели подписываются. Подходит для распределённой системы.</td></tr>
+<tr><td>Числа для физических световых приборов</td><td><strong>DMX512</strong>, <strong>Art-Net</strong>, <strong>sACN</strong></td><td>Нужна карта приборов и каналов. Art-Net и sACN позволяют передавать значения по IP-сети, затем сетевой узел может вывести их в физическую DMX-линию.</td></tr>
+<tr><td>Видео и текстуры</td><td><strong>NDI</strong> по сети, <strong>Spout</strong> или <strong>Syphon</strong> локально</td><td>Это отдельный тракт изображения. Spout используют на Windows, Syphon на macOS. Сигнал управления можно передавать параллельно по OSC.</td></tr>
+</tbody></table></div>
+<p><strong>UDP и TCP.</strong> UDP передаёт отдельные датаграммы без гарантии доставки и порядка. Это подходит для свежих значений, когда следующее обновление быстро заменяет пропущенное. TCP предоставляет надёжный упорядоченный поток байтов в установленном соединении. Повторная доставка может задержать последующие данные. WebSocket в обычной схеме браузерного пульта работает поверх такого соединения и добавляет границы сообщений. Подтверждение доставки на уровне сети всё равно отличается от подтверждения действия внутри проекта.</p>
+<p>Если числом управляют яркостью, обычно важнее последнее значение, чем очередь всех промежуточных. Если сообщением запускают эпизод, полезно назначить ему идентификатор и получить ответ <code>accepted</code>, а после фактического запуска <code>running</code>. Это позволяет отличить принятую команду от результата. <a href="https://learn.derivative.ca/courses/100-fundamentals/lessons/108-resources/topic/interoperability-opportunities/">Обзор связи с внешними средами в TouchDesigner Curriculum</a>.</p>
+
+<h2 id="osc">OSC между Unreal и TouchDesigner</h2>
+<p>Возьмём сцену, где игрок подходит к объекту, а отдельная проекция показывает реакцию. Unreal отслеживает пересечение триггера. TouchDesigner принимает управляющее сообщение и запускает визуальный переход. В той же установке Unreal может отдавать видео по отдельному тракту, если на экране нужен его рендер.</p>
+<figure class="protocol-flow"><figcaption>Учебная схема Unreal → TouchDesigner</figcaption><ol><li>Unreal<br>Игрок входит в Trigger Box</li><li>OSC по UDP<br><code>/scene/zone</code>, число 1</li><li>TouchDesigner<br>OSC In CHOP или DAT</li><li>Графика<br>Смена сцены и плавный вход</li></ol></figure>
+<h3>Что передавать</h3>
+<p>Адрес <code>/scene/zone</code> сообщает, что изменилось. Аргумент 1 означает вход, 0 выход. Для плавного параметра договоритесь об адресе <code>/player/speed</code> и числе от 0 до 1. Если нужна позиция, согласуйте порядок осей и единицы. В большинстве сцен Unreal расстояние измеряется в сантиметрах. Приёмник может пересчитать их в метры или нормализованный диапазон.</p>
+<h3>Настройка отправителя</h3>
+<ol>
+<li>В Unreal включите плагин <em>OSC</em> через <em>Edit → Plugins</em>. Откройте Blueprint актора, отвечающего за зону.</li>
+<li>В начале игры создайте OSC Client с IP получателя и портом 9000. Сохраните ссылку на клиент, чтобы не создавать его при каждом событии.</li>
+<li>На <em>Begin Overlap</em> проверьте, что событие относится к игроку, сформируйте OSC Message с адресом <code>/scene/zone</code> и числовым аргументом 1, отправьте через <em>Send OSC Message</em>. На <em>End Overlap</em> отправьте 0. Для скорости используйте таймер с выбранной частотой вместо отправки всего набора параметров на каждом Tick.</li>
+</ol>
+<h3>Настройка приёмника</h3>
+<ol>
+<li>В TouchDesigner создайте <em>OSC In DAT</em>, укажите 9000 и посмотрите, что приходит при пересечении зоны. Для числового канала можно использовать <em>OSC In CHOP</em> с тем же портом, предварительно освободив его у тестового приёмника.</li>
+<li>Выберите нужный сигнал. Если <code>/scene/zone</code> используется как состояние, меняйте сцену при переходе между 0 и 1. Если нужен одиночный импульс, выделите фронт перехода. Для потока скорости сначала ограничьте диапазон, затем добавьте сглаживание.</li>
+<li>Проверьте реакцию на вход и выход, на повтор и на перезапуск Unreal. Если проект должен восстановить сцену после обрыва, отправляйте текущее состояние при старте или периодически вместе с признаком связи.</li>
+</ol>
+<p><a href="https://dev.epicgames.com/documentation/en-us/unreal-engine/osc-plugin-overview-for-unreal-engine">Blueprint-пример отправки OSC от Epic Games</a> · <a href="https://derivative.ca/UserGuide/OSC">Приём OSC в TouchDesigner</a>.</p>
+<h3>Синхронизация монтажного времени</h3>
+<p>В примере <em>Unreal Sequencer Sync</em> редактор Unreal передаёт текущий кадр, границы последовательности, частоту кадров и её имя через OSC. TouchDesigner использует эти данные для управления временем в своём проекте. Это пример связки Unreal → TouchDesigner для работы в редакторе. В игровой сборке для отправки понадобится отдельная логика. <a href="https://derivative.ca/community-post/asset/uesequencersync/66050">Описание инструмента от автора</a>.</p>
+<figure class="embedded-media"><div class="video-frame"><iframe src="https://player.vimeo.com/video/693420311" title="Unreal Sequencer Sync" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><figcaption>Unreal Sequencer Sync. Посмотрите, как автор соединяет таймлайн Unreal с проектом TouchDesigner. <a href="https://vimeo.com/693420311">Открыть видео</a>.</figcaption></figure>
+<figure class="embedded-media"><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/PQAeUkcykVo" title="Jack DiLaura · виртуальный свет через OSC" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><figcaption>Jack DiLaura · виртуальный свет через OSC. Обратное направление. TouchDesigner передаёт значения, а Unreal управляет виртуальными светильниками в сцене вагона. <a href="https://www.youtube.com/watch?v=PQAeUkcykVo">Открыть видео</a>.</figcaption></figure>
+
+
+<h2 id="websocket">Веб-пульт для TouchDesigner</h2>
+<p>На выставке зритель сканирует QR-код, открывает страницу и меняет цвет проекции. Браузер отправляет команду, а TouchDesigner проверяет значение и применяет его к графике. Для учебной версии возьмём яркость. Сначала протестируем её в окне программы, а к физическому свету подключимся после проверки диапазона.</p>
+<figure class="protocol-flow"><figcaption>Веб → TouchDesigner</figcaption><ol><li>Браузер<br>Ползунок от 0 до 1</li><li>WebSocket<br>Сообщение JSON</li><li>Web Server DAT<br>Разбор и проверка</li><li>Constant CHOP<br>Нормализованная яркость</li><li>Графика<br>Параметр эффекта или цвет</li></ol></figure>
+<p><strong>HTTP выдаёт страницу, WebSocket передаёт изменения.</strong> Оба могут работать через один <em>Web Server DAT</em>. Для локальной пробы включите его на порту 9980. В том же компоненте создайте Text DAT <code>text_panel</code> и Constant CHOP <code>constant_level</code> с одним каналом <code>level</code>. В Text DAT поместите HTML пульта, а в callback DAT сервера обновите функции ниже, сохранив остальные обработчики из шаблона.</p>
+<h3>Страница пульта</h3>
+<pre class="course-code" data-language="html"><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang="ru"&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+&lt;title&gt;Пульт яркости&lt;/title&gt;
+&lt;label&gt;Яркость
+  &lt;input id="level" type="range" min="0" max="1"
+         step="0.01" value="0" disabled&gt;
+&lt;/label&gt;
+&lt;p id="status" role="status"&gt;Подключение…&lt;/p&gt;
+&lt;script&gt;
+const slider = document.querySelector("#level")
+const status = document.querySelector("#status")
+const scheme = location.protocol === "https:" ? "wss:" : "ws:"
+const socket = new WebSocket(scheme + "//" + location.host + "/")
+
+socket.addEventListener("open", () =&gt; {
+  slider.disabled = false
+  status.textContent = "Пульт подключён"
+})
+
+slider.addEventListener("change", () =&gt; {
+  if (socket.readyState !== WebSocket.OPEN) return
+  socket.send(JSON.stringify({
+    type: "level",
+    value: Number(slider.value)
+  }))
+})
+
+socket.addEventListener("close", () =&gt; {
+  slider.disabled = true
+  status.textContent = "Связь потеряна. Обновите страницу."
+})
+&lt;/script&gt;
+&lt;/html&gt;</code></pre>
+<p>У пульта два разных признака успеха. Сообщение «подключён» относится к соединению, а изменение в TouchDesigner показывает, что команда обработана. В демонстрации событие <code>change</code> отправляет завершённое изменение ползунка. Для непрерывного отклика используйте <code>input</code> и ограничьте частоту отправки. При нескольких зрителях заранее определите, чей выбор действует и сколько времени он сохраняется.</p>
+<h3>Приём значения в TouchDesigner</h3>
+<pre class="course-code" data-language="python"><code class="language-python">import json
+import math
+
+def onHTTPRequest(dat, request, response):
+    response['statusCode'] = 200
+    response['statusReason'] = 'OK'
+    response['data'] = dat.parent().op('text_panel').text
+    return response
+
+def onWebSocketReceiveText(dat, client, data):
+    if len(data) &gt; 512:
+        return
+    try:
+        message = json.loads(data)
+    except (ValueError, RecursionError):
+        return
+    if not isinstance(message, dict) or message.get('type') != 'level':
+        return
+    value = message.get('value')
+    if type(value) not in (int, float) or not 0 &lt;= value &lt;= 1:
+        return
+    if not math.isfinite(value):
+        return
+    dat.parent().op('constant_level').par.value0 = value
+    return</code></pre>
+<p>Откройте <code>http://127.0.0.1:9980/</code> на компьютере с TouchDesigner. Убедитесь, что ползунок меняет <code>level</code> от 0 до 1. Подключите этот канал к яркости графики через CHOP Reference или Export. Для телефона в той же разрешённой сети откройте страницу по локальному адресу компьютера. Если страница открывается, а значение не меняется, проверьте события WebSocket в инструментах браузера и ошибки callback DAT в TouchDesigner.</p>
+<p>Этот пример рассчитан на локальную учебную сеть. Для публичного доступа согласуйте <code>wss://</code>, авторизацию, проверку источника подключения и ограничение частоты. В выставочной схеме браузер может обращаться к отдельному шлюзу, а TouchDesigner и световая сеть остаются внутри площадки. Шлюз проверяет команды и передаёт только разрешённые значения. <a href="https://docs.derivative.ca/Web_Server_DAT">Документация Web Server DAT</a> · <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_client_applications">Клиент WebSocket в MDN</a>.</p>
+<figure class="embedded-media"><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/P-N8-sJEM6s" title="Torin Blankensmith · веб-интерфейс для TouchDesigner" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><figcaption>Torin Blankensmith · веб-интерфейс для TouchDesigner. Вводный разбор двусторонней связи сайта и TouchDesigner. В учебной схеме выше HTML и WebSocket обслуживает один Web Server DAT. <a href="https://www.youtube.com/watch?v=P-N8-sJEM6s">Открыть видео</a>.</figcaption></figure>
+<p>Обратный канал нужен, если пульт должен показывать текущую сцену или подтверждение. Например, TouchDesigner применяет значение и возвращает <code>{"type":"state","level":0.4}</code>. При новом подключении пульт сначала получает состояние, затем разрешает управление. <a href="https://www.youtube.com/watch?v=QNARCMdm4IY">Продолжение серии о передаче данных из TouchDesigner на страницу</a>.</p>
+
+<h2 id="dmx">DMX512 и устройство световой линии</h2>
+<p>В световой системе <strong>DMX512</strong> передаёт значения, которые приборы читают по своим адресам. Это похоже на общую таблицу из ячеек. Контроллер регулярно обновляет таблицу, а каждый прибор использует свой участок. Одну такую группу называют <strong>вселенной</strong> или <strong>universe</strong>. В ней до 512 управляющих слотов, обычно в интерфейсах они обозначаются числами от 1 до 512.</p>
+<p>Один слот несёт целое значение от 0 до 255. Что означает число, определяет <strong>режим прибора</strong>. На канале диммера 0 часто соответствует выключенному свету, а 255 полной яркости. На канале выбора эффекта промежуток значений может включать конкретную программу. Смотрите таблицу каналов в руководстве прибора. Значение 0 у канала с положением, режимом или макросом имеет своё значение.</p>
+<h3>Физическая линия</h3>
+<figure class="protocol-flow"><figcaption>Один выход контроллера и цепочка приборов</figcaption><ol><li>Контроллер<br>DMX OUT</li><li>Прибор A<br>IN → THRU</li><li>Прибор B<br>IN → THRU</li><li>Последний прибор<br>Терминатор 120 Ом</li></ol></figure>
+<p>Физический DMX использует последовательную дифференциальную линию. Обычно контроллер подключают к DMX IN первого прибора, затем продолжают через THRU или предназначенный для этого выход. В конце линии ставят терминатор 120 Ом. Для ветвления используют DMX-сплиттер, а приборы получают своё питание отдельно. Внешне похожие XLR и RJ45 встречаются у разного оборудования, поэтому сначала проверьте назначение разъёма и распиновку.</p>
+<p>DMX512 в базовом режиме передаёт управление в одну сторону. Если нужен запрос сведений или настройка совместимых приборов по той же линии, есть расширение <strong>RDM</strong>. Поддержку проверяют у контроллера, узла и прибора. <a href="https://support.etcconnect.com/ETC/Getting_Started_with_ETC_and_FAQ/DMX512-Info">Основы физической линии DMX от ETC</a>.</p>
+
+<h2 id="patch">Адресация, режимы и патч</h2>
+<p>У каждого прибора есть <strong>стартовый адрес</strong>. Прибор считывает столько слотов подряд, сколько занимает его режим. Например, условный режим <code>DIM + R + G + B</code> занимает четыре слота. Если стартовый адрес 9, прибор читает 9–12. Следующий такой же независимый прибор можно поставить на 13. Ниже условный пример, который нужно сверить с паспортом конкретного оборудования.</p>
+<div class="table-wrap"><table><thead><tr><th>Прибор</th><th>Режим</th><th>Старт</th><th>Адреса в одной вселенной</th></tr></thead><tbody>
+<tr><td>Светильник A</td><td>4 канала</td><td>1</td><td>1 DIM, 2 R, 3 G, 4 B</td></tr>
+<tr><td>Светильник B</td><td>4 канала</td><td>5</td><td>5 DIM, 6 R, 7 G, 8 B</td></tr>
+<tr><td>Светильник C</td><td>4 канала</td><td>9</td><td>9 DIM, 10 R, 11 G, 12 B</td></tr>
+</tbody></table></div>
+<p>Последний слот прибора равен старту плюс число каналов минус один. Четырёхканальный прибор со стартом 509 занимает 509–512. Если свободных слотов в конце уже не хватает, разместите прибор в другой вселенной. Два прибора с одинаковым режимом и одинаковым адресом получают одну команду. Это допустимо, если они должны работать одинаково. Для независимого управления диапазоны разделяют.</p>
+<h3>Режимы и карта каналов</h3>
+<p>Одна модель может предлагать простой RGB-режим, режим с общим диммером и расширенный режим с макросами. При смене режима меняются число каналов и их значения. Поэтому сначала выберите режим на приборе и в программе, затем назначьте адреса. В <strong>патче</strong> записывают, какой физический прибор соответствует какой вселенной, стартовому адресу и режиму. Полезно добавить название позиции в зале и порт узла.</p>
+<p>Для плавного позиционирования подвижной головы часто используют два слота на один параметр, старший и младший байты. Например, в 16-битном Pan значение вычисляется как <code>coarse × 256 + fine</code>. Порядок слотов и диапазоны углов определяет производитель. Такой же принцип встречается у 16-битных диммеров и других параметров. Сначала проверьте один прибор на небольшом диапазоне, затем подключайте автоматизацию.</p>
+<h3>Вселенная в сети</h3>
+<p>Физический выход DMX переносит одну вселенную. По Ethernet можно передавать много вселенных, если сеть, узлы и контроллер поддерживают выбранный объём. <strong>Art-Net</strong> и <strong>sACN</strong> переносят световые значения в UDP-пакетах. Art-Net поддерживает маршрутизацию к заданному устройству и широковещательную передачу, а sACN часто использует multicast. Сетевой узел может принимать выбранную вселенную и выводить её на конкретный разъём DMX.</p>
+<p>Сверяйте адреса на обеих сторонах. Первый Art-Net universe в одном интерфейсе может отображаться как 0, а в другом как 1. Поля <em>Net</em>, <em>Subnet</em> и <em>Universe</em> в Art-Net относятся к световому адресу, а маска IP-сети настраивается отдельно. У sACN своя нумерация. Запишите, как одна и та же вселенная отображается в TouchDesigner и на узле. <a href="https://art-net.org.uk/downloads/art-net.pdf">Спецификация Art-Net</a> · <a href="https://www.etcconnect.com/WebDocs/Controls/EosFamilyOnlineHelp/en/Content/03_Eos_System_Requirements_and_Setup/Eos_Networking_Overview/Entertainment_Control_Networks.htm">Вселенная и адресация в документации ETC</a>.</p>
+
+
+<h2 id="lighting">От TouchDesigner к световому прибору</h2>
+<p>Пока <code>level</code> находится в диапазоне 0–1, его удобно использовать в графике, звуке и свете. На последнем шаге переведите его в диапазон конкретного прибора. Тогда изменение световой схемы не потребует переделывать входы от Unreal и браузера.</p>
+<figure class="protocol-flow"><figcaption>Веб-пульт управляет яркостью в зале</figcaption><ol><li>Пульт<br>WebSocket и число 0–1</li><li>TouchDesigner<br>Ограничение и сглаживание</li><li>DMX Out CHOP<br>Слоты 0–255</li><li>Узел Art-Net<br>Выбранная вселенная</li><li>Прибор<br>Диммер и цвет</li></ol></figure>
+<h3>Подготовка чисел</h3>
+<ol>
+<li>Выберите один прибор, его режим и стартовый адрес. Для учебного примера это светильник A из таблицы с четырьмя каналами.</li>
+<li>Подготовьте четыре CHOP-канала в порядке <code>dim, r, g, b</code>. В начале удобно выставить цвет постоянными значениями и менять только диммер. <em>Math CHOP</em> может преобразовать 0–1 в 0–255. Если нужно ограничить максимальную яркость для пробы, сделайте это до отправки.</li>
+<li>Проверьте порядок в CHOP Viewer. Например, <code>64, 255, 0, 0</code> означает умеренный диммер и красный цвет в условном режиме DIM+RGB. В режиме RGB без отдельного диммера яркость можно изменить масштабированием всех трёх цветовых каналов. Если схема начнётся с адреса 9, заполните слоты 1–8 либо задайте явную маршрутизацию.</li>
+<li>Поставьте в конце расчёта <em>Null CHOP</em> и подайте его в <em>DMX Out CHOP</em>. При последовательном выводе первый канал соответствует первому адресу, дальше значения идут по порядку. По именам <code>red</code> и <code>blue</code> адреса автоматически не определяются.</li>
+</ol>
+<h3>Подключение выхода</h3>
+<div class="table-wrap"><table><thead><tr><th>Что есть на площадке</th><th>Как соединить</th><th>Что проверить</th></tr></thead><tbody>
+<tr><td>Совместимый USB–DMX интерфейс</td><td>TouchDesigner → USB–DMX → прибор</td><td>Модель устройства, выбранный интерфейс в DMX Out, кабель, адрес и режим прибора.</td></tr>
+<tr><td>Art-Net или sACN узел</td><td>TouchDesigner → Ethernet → узел → DMX OUT → прибор</td><td>IP, сетевой адаптер, протокол, вселенную и привязку выхода узла.</td></tr>
+<tr><td>Световой пульт или сетевой процессор</td><td>TouchDesigner → сеть → пульт → световая система</td><td>Назначение входа и правила смешивания, право оператора взять управление.</td></tr>
+</tbody></table></div>
+<p>При сетевом выводе выберите интерфейс <em>Art-Net</em> или <em>sACN</em> в DMX Out CHOP, укажите нужную вселенную и сетевые параметры согласно оборудованию. Включите <em>Active</em> после согласования с оператором. На первом запуске меняйте по одному каналу и наблюдайте прибор. Сначала проверьте диммер, затем отдельно красный, зелёный и синий. Если цвета перепутаны, сопоставьте порядок CHOP-каналов с режимом прибора. <a href="https://docs.derivative.ca/DMX_Out_CHOP">Документация DMX Out CHOP</a>.</p>
+<figure class="embedded-media"><div class="video-frame"><iframe src="https://player.vimeo.com/video/327930308" title="MITH tv · DMX Out из TouchDesigner по Art-Net" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><figcaption>MITH tv · DMX Out из TouchDesigner по Art-Net. В уроке значения принимает Resolume. Это полезная проба сетевого выхода, прежде чем заменять приёмник на узел и физический прибор. <a href="https://vimeo.com/327930308">Открыть видео</a>.</figcaption></figure>
+<h3>Много приборов и пикселей</h3>
+<p>Для нескольких светильников заведите патч, укажите в нём вселенную, старт и режим каждого. В учебном проекте на одной линии достаточно последовательно собрать CHOP-каналы. При масштабировании можно воспользоваться таблицей маршрутизации, а в сборках TouchDesigner с поддержкой DMX POP рассмотреть связку <em>DMX Fixture POP → DMX Out POP</em>. <em>DMX Map DAT</em> помогает увидеть раскладку и найти конфликты. Уточняйте нумерацию в интерфейсе оператора, поскольку слоты прибора могут показываться с 1, а индекс канала в конкретном инструменте с 0.</p>
+<p>Пиксельная лента расходует адреса быстро. В простом режиме RGB каждый пиксель занимает три слота. В одной вселенной помещается 170 целых RGB-пикселей, которые занимают 510 слотов. Для следующего пикселя нужно место в другой вселенной, если контроллер раскладывает пиксели целиком. Запишите, как пиксели на плане соответствуют адресам и в какую сторону идёт лента. <a href="https://docs.derivative.ca/DMX_Fixture_POP">DMX Fixture POP</a> · <a href="https://docs.derivative.ca/DMX_Map_DAT">DMX Map DAT</a>.</p>
+
+<h2 id="cases">Инсталляции и работа с площадкой</h2>
+<h3>Bardo на Day for Night</h3>
+<p>В инсталляции Bardo команда использовала инфракрасное сканирование для отслеживания людей. TouchDesigner получал координаты на плоскости зала и связывал их с моделью света. Данные уходили по Art-Net на grandMA2, которая объединяла входящие значения с остальным управлением и работала со световыми сценами. Такой подход позволяет сохранить привычный пульт оператора и добавить реакцию на посетителей. <a href="https://derivative.ca/community-post/touchdown-houston-day-night-festival-2016/60675">Интервью с командой на сайте Derivative</a>.</p>
+<figure class="protocol-flow"><figcaption>Пайплайн Bardo по описанию команды</figcaption><ol><li>Инфракрасное сканирование</li><li>Координаты посетителей</li><li>TouchDesigner и модель света</li><li>Art-Net</li><li>grandMA2 и световые приборы</li></ol></figure>
+<h3>The Banyan Tree</h3>
+<p>В разборе The Banyan Tree Стивен Бонтли показывает работу над световой скульптурой для Sixth Sense Festival. Смотрите, как схема из отдельных приборов превращается в систему, где пресеты и реакции на внешние данные можно менять по мере подготовки площадки. В материалах воркшопа автор использует DMX POPs и Art-Net. <a href="https://derivative.ca/workshop/dmx-pops-case-study-%E2%80%93-interactive-light-sculptures-dmx-pops/74720">Описание кейса и воркшопа Derivative</a>.</p>
+<figure class="embedded-media"><div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/RftI9kFAOMY" title="The Banyan Tree · разбор интерактивной световой инсталляции" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><figcaption>The Banyan Tree · разбор интерактивной световой инсталляции. Доклад о проекте. Отметьте, где возникает управляющий сигнал и кто отвечает за итоговую световую сцену. <a href="https://www.youtube.com/watch?v=RftI9kFAOMY">Открыть видео</a>.</figcaption></figure>
+<h3>Два источника и одно управление</h3>
+<p>Если один светильник одновременно получает данные от сценического пульта и от интерактивного проекта, нужен явный приоритет. Например, TouchDesigner меняет яркость внутри разрешённого диапазона, а оператор выбирает сцену и может отключить интерактив. При смешивании по максимуму низкое значение из одной системы не погасит высокий уровень из другой. Для позиции и командных каналов часто нужны другие правила, которые согласуют для конкретной системы.</p>
+<p>На случай потери связи заранее определите безопасное состояние. Одни приборы удерживают последнее значение, другие могут выполнить своё правило потери DMX. В TouchDesigner можно отслеживать время последнего сообщения и плавно возвращать параметры к согласованной сцене. С оператором проверьте восстановление связи, ручное управление и поведение при перезапуске. Для пробы используйте умеренную яркость и режим без строба.</p>
+
+<h2 id="practice">Практика и диагностика</h2>
+<p>Соберите один короткий сценарий. Событие из Unreal выбирает сцену, а ползунок из браузера задаёт её интенсивность. TouchDesigner показывает состояние на экране. После проверки можно передать те же значения одному согласованному прибору. Если оборудования нет, закончите работу таблицей DMX-слотов и экранной индикацией вместо физического выхода.</p>
+<ol>
+<li><strong>Протоколы и роли.</strong> Нарисуйте схему из трёх сред и укажите для каждой связи направление, протокол, адрес и пример сообщения.</li>
+<li><strong>Тест входов.</strong> Проверьте отдельно вход в зону в Unreal и изменение ползунка. В TouchDesigner покажите полученные значения и результат на графике.</li>
+<li><strong>Патч.</strong> Составьте карту для трёх приборов. Укажите режимы, вселенную и стартовые адреса. Покажите ожидаемые слоты для выбранного цвета и диммера.</li>
+<li><strong>Отказ и восстановление.</strong> Закройте пульт и перезапустите один из источников. Зафиксируйте, что происходит со сценой и как управление возвращается.</li>
+</ol>
+<div class="table-wrap"><table><thead><tr><th>Симптом</th><th>Где искать</th><th>Быстрая проверка</th></tr></thead><tbody>
+<tr><td>TouchDesigner ничего не получает</td><td>Отправитель, адрес, порт и локальная сеть</td><td>Начните на одном компьютере. Проверьте вход в DAT и затем перенесите одну сторону на другое устройство.</td></tr>
+<tr><td>Сообщение видно, а эффект не реагирует</td><td>Адрес OSC или ключ JSON, диапазон и привязка</td><td>Подайте постоянное значение на вход эффекта. Затем замените его сетевым каналом.</td></tr>
+<tr><td>Браузер открывает страницу, а соединение не устанавливается</td><td>URL WebSocket, <code>ws</code> или <code>wss</code>, callback сервера</td><td>Посмотрите запрос WebSocket в браузере и убедитесь, что сервер принимает соединение на том же порту.</td></tr>
+<tr><td>Слоты меняются, а прибор молчит</td><td>Выход, вселенная, узел, кабель или режим прибора</td><td>Проверьте вход узла и одну известную команду на одном приборе.</td></tr>
+<tr><td>Управляется соседний прибор или другой цвет</td><td>Сдвиг адресов, порядок каналов, пересечение патча</td><td>По одному меняйте слоты и запишите, какие функции фактически реагируют.</td></tr>
+</tbody></table></div>
+<p>На защите покажите сигнал в трёх местах. Сначала у источника, затем на входе TouchDesigner, затем в результате или карте DMX. Так видно, как каждая среда выполняет свою часть работы и где искать причину, если цепочка перестала отвечать.</p>
+
+
+      <nav class="lecture-pagination" aria-label="Навигация по лекциям">
+        <a id="prevLecture" href="#">← <span>Предыдущая тема</span></a>
+        <a id="nextLecture" href="#"><span>Следующая тема</span> →</a>
+      </nav>
+    </article>
+  </main>
+</div>
+
+<div class="sidebar-backdrop" aria-hidden="true"></div>
+<script src="../topics.js?v=49"></script>
+<script src="../lecture.js?v=sri1"></script>
+<script src="../site-settings.js?v=20"></script>
+<script src="../course-design.js?v=22"></script>
+</body>
+</html>

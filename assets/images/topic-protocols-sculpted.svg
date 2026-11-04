@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600">
+<title>Сигнал от источника к свету</title>
+<defs>
+  <radialGradient id="back"><stop stop-color="#272727"/><stop offset="1" stop-color="#0b0b0b"/></radialGradient>
+  <linearGradient id="metal" x2="0" y2="1"><stop stop-color="#b6b6b6"/><stop offset="1" stop-color="#353535"/></linearGradient>
+  <linearGradient id="beam"><stop stop-color="#eaeaea" stop-opacity=".65"/><stop offset="1" stop-color="#ddd" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="960" height="600" fill="url(#back)"/>
+<ellipse cx="480" cy="471" rx="320" ry="28" fill="#060606" opacity=".65"/>
+<path d="M224 327h100l40-78 57 146 46-108 32 40h86" fill="none" stroke="#dedede" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="url(#metal)" stroke="#aaa" stroke-width="3">
+  <rect x="144" y="269" width="98" height="116" rx="18"/>
+  <rect x="574" y="265" width="118" height="124" rx="18"/>
+</g>
+<g fill="#242424"><circle cx="191" cy="327" r="24"/><circle cx="639" cy="327" r="34"/></g>
+<circle cx="639" cy="327" r="22" fill="#e3e3e3"/>
+<path d="M650 309 840 217v220L650 345Z" fill="url(#beam)"/>
+</svg>
