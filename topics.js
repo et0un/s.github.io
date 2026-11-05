@@ -67,8 +67,7 @@ window.COURSE_TOPICS = [
     "title": "Протоколы передачи",
     "tags": [
       "Теория",
-      "Практика",
-      "TouchDesigner"
+      "Софт"
     ],
     "thumbnail": "assets/images/topic-protocols-sculpted.svg"
   },
