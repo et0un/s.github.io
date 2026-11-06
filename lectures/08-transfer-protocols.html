@@ -73,7 +73,7 @@
 <nav aria-label="Содержание лекции"><ul>
 <li><a href="#language">Как среды договариваются</a></li>
 <li><a href="#choose">Как выбрать протокол</a></li>
-<li><a href="#sensor-cases">Примеры с тепловой камерой и лидаром</a></li>
+<li><a href="#sensor-cases">Данные с лидара</a></li>
 <li><a href="#midi">MIDI и контроллеры</a></li>
 <li><a href="#ndi">NDI, Spout и Syphon</a></li>
 <li><a href="#other-protocols">HTTP, MQTT и Serial</a></li>
@@ -129,12 +129,7 @@
 
 
 <h2 id="sensor-cases">Как датчик становится частью изображения</h2>
-<p>В двух следующих примерах из подборки Invisart зритель влияет на графику через измерение. При сборке похожего проекта нужно решить, в каком виде программа получает данные: кадры камеры, координаты или уже готовые события. От этого зависит, что предстоит обработать и по какому интерфейсу передавать результат.</p>
-<h3>Thermal Drift Density Map</h3>
-<p>В работе Рафаэля Лосано-Хеммера тепловая камера измеряет излучение тела, а программа превращает его в частицы, которые постепенно рассеиваются вокруг силуэта. Смотрите, как изображение продолжает меняться после движения человека. Здесь входные кадры и состояние системы частиц выполняют разные роли. <a href="https://www.lozano-hemmer.com/thermal_drift_density_map.php">Описание и состав оборудования на сайте автора</a>.</p>
-<figure class="embedded-media"><div class="video-frame"><iframe src="https://player.vimeo.com/video/1222201166" title="Rafael Lozano-Hemmer · Thermal Drift Density Map" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><figcaption>Тепловое изображение превращается в изменяющийся портрет посетителя. <a href="https://vimeo.com/1222201166">Открыть оригинал на Vimeo</a>.</figcaption></figure>
-<figure class="protocol-flow"><figcaption>Функциональная схема по описанию работы</figcaption><ol><li>Тепловое излучение тела</li><li>Тепловая камера</li><li>Программа обрабатывает изображение</li><li>Система частиц</li><li>Экран или проекция</li></ol></figure>
-<p><strong>Связь с темой лекции.</strong> Для подобной системы видеопоток может поступать в программу напрямую от подключённой камеры. Если обработка и графика разнесены по компьютерам, команда отдельно выбирает, передавать ли изображение или извлечённые параметры. В первом случае нужен видеотракт, во втором можно согласовать управляющие сообщения. Это варианты построения похожей системы.</p>
+<p>Когда зритель приближается к интерактивной стене, программе нужны данные о его положении. В примере ниже их даёт лидар. При проектировании важно определить, где измерения превращаются в координаты и что получает программа, которая отвечает за изображение.</p>
 <h3>LIDAR Touch от Future Wife</h3>
 <p>В демонстрации Future Wife зритель проводит рукой возле LED-стены и меняет генеративную графику. Авторы описывают LIDAR Touch как сочетание оборудования и программы, которое позволяет превратить поверхность в интерактивный холст и использовать существующие дисплеи или проекторы. Сравните точку действия руки с областью реакции изображения. <a href="https://www.futurewife.tv/lidar-touch">Описание LIDAR Touch и авторы проекта</a>.</p>
 <figure class="embedded-media"><div class="video-frame"><iframe src="https://player.vimeo.com/video/305839315" title="Future Wife · LIDAR Touch" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><figcaption>Обычная LED-стена становится интерактивной поверхностью. <a href="https://vimeo.com/305839315">Открыть оригинал на Vimeo</a>.</figcaption></figure>
