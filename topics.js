@@ -66,6 +66,7 @@ window.COURSE_TOPICS = [
     "slug": "08-transfer-protocols",
     "title": "Протоколы передачи",
     "tags": [
+      "Актуально",
       "Теория",
       "Софт"
     ],
@@ -75,6 +76,7 @@ window.COURSE_TOPICS = [
     "slug": "09-realtime-graphics",
     "title": "Как формируется графика в реальном времени",
     "tags": [
+      "Актуально",
       "Теория",
       "Практика",
       "TouchDesigner"
