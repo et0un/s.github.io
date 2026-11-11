@@ -82,5 +82,6 @@ window.COURSE_TOPICS = [
       "TouchDesigner"
     ],
     "thumbnail": "assets/images/topic-realtime-graphics-sculpted.svg"
-  }
+  },
+  {"slug": "10-ai-mcp", "title": "Нейросети и MCP в разработке интерактивных проектов", "tags": ["Теория", "Практика"]}
 ];
