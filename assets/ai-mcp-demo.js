@@ -37,6 +37,11 @@
       art.fill();
     }
     art.globalAlpha = 1;
+    // Apply exposure to the whole composition, including the background.
+    art.fillStyle = '#000';
+    art.globalAlpha = (1 - state.brightness) * .88;
+    art.fillRect(0, 0, scene.width, scene.height);
+    art.globalAlpha = 1;
   }
   function showState() {
     slider.value = state.speed;
@@ -49,6 +54,9 @@
       ? { ...state, brightness: Number(Math.min(1, state.brightness + .2).toFixed(2)) }
       : { ...presets[preset] };
     showState();
+    panel.querySelector('[role="status"]').textContent = preset === 'bright'
+      ? (state.brightness === 1 ? 'Яркость 100%, достигнут максимум.' : `Яркость повышена до ${Math.round(state.brightness * 100)}%.`)
+      : `Выбран пресет «${button.textContent.trim()}».`;
   }));
   slider.addEventListener('input', () => {
     state.speed = Number(slider.value);
