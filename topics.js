@@ -83,5 +83,5 @@ window.COURSE_TOPICS = [
     ],
     "thumbnail": "assets/images/topic-realtime-graphics-sculpted.svg"
   },
-  {"slug": "10-ai-mcp", "title": "Нейросети и MCP в разработке интерактивных проектов", "tags": ["Теория", "Практика"]}
+  {"slug": "10-ai-mcp", "title": "Нейросети, компьютерное зрение и MCP в интерактивных проектах", "tags": ["Теория", "Практика"]}
 ];
