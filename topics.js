@@ -83,8 +83,8 @@ window.COURSE_TOPICS = [
     ],
     "thumbnail": "assets/images/topic-realtime-graphics-sculpted.svg"
   },
-  {"slug": "10-ai-mcp", "title": "Нейросети, компьютерное зрение и MCP в интерактивных проектах", "tags": ["Теория", "Практика"]},
-  {"slug": "11-data-sensors", "title": "Данные и датчики в интерактивных проектах", "tags": ["Теория", "Практика"]},
+  {"slug": "10-ai-mcp", "title": "Нейросети, компьютерное зрение и MCP в интерактивных проектах", "tags": ["Теория"]},
+  {"slug": "11-data-sensors", "title": "Данные и датчики в интерактивных проектах", "tags": ["Теория"]},
   {"slug": "12-materials", "title": "Работа с материалами в TouchDesigner", "tags": ["Теория", "Практика", "TouchDesigner"]},
   {"slug": "13-touchdesigner-interfaces", "title": "Создание интерфейсов в TouchDesigner", "tags": ["Теория", "Практика", "TouchDesigner"]}
 ];
