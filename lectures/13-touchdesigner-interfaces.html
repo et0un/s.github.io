@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Лекция курса «Среды разработки интерактивного контента»">
+  <title>Создание интерфейсов в TouchDesigner · Среды разработки интерактивного контента</title>
+  <link rel="stylesheet" href="../styles.css?v=20">
+</head>
+<body class="lecture-page" data-topic="13-touchdesigner-interfaces">
+<header class="lecture-topbar">
+  <nav aria-label="Главная навигация">
+    <a href="../index.html">Главная</a>
+    <a href="../index.html#about">О курсе</a>
+    <a href="../index.html#links">Ссылки</a>
+    <a class="active" href="../index.html#topics">Темы</a>
+  </nav>
+</header>
+
+<button class="topics-toggle" type="button" aria-expanded="false">
+  <strong>Темы курса</strong><span>Темы · открыть</span>
+</button>
+
+<div class="lecture-shell">
+  <aside class="lecture-sidebar" aria-label="Темы курса">
+    <div class="sidebar-head">
+      <span>ТЕМЫ КУРСА</span>
+      <button class="sidebar-close" type="button" aria-label="Закрыть список тем">×</button>
+    </div>
+    <div id="lectureTopics" class="lecture-topic-list"></div>
+  </aside>
+
+  <main class="lecture-main">
+    <article class="lecture-article">
+      <!-- Номер, название и теги ниже автоматически заменит lecture.js -->
+      <div class="lecture-kicker">ТЕМА 13</div>
+      <h1>Создание интерфейсов в TouchDesigner</h1>
+      <div class="tags"><span class="tag theory">Теория</span><span class="tag practice">Практика</span></div>
+
+
+<style>.mat-video iframe{width:100%;height:auto;aspect-ratio:16/9;border:0}.mat-table{overflow:auto}.mat-table td,.mat-table th{padding:12px;text-align:left;border-bottom:1px solid #555}</style>
+<p class="lead">У одной инсталляции может быть два интерфейса. Посетитель видит крупную кнопку запуска и подсказку, а оператор проверяет сигнал камеры, меняет яркость и возвращает проект в исходное состояние. Оба экрана могут работать с одной сценой TouchDesigner.</p>
+<h2>Собираем экран из панелей</h2>
+<p>Container COMP может содержать дочерние панели. Соберите внутри него область предпросмотра и колонку управления. Задайте, как панели делят доступное место, затем измените размер родительского контейнера. Проверьте, остаются ли видны кнопки и сохраняет ли изображение пропорции. Для тачскрина оставьте достаточно места между соседними элементами и показывайте реакцию на касание сразу.</p>
+<figure class="embedded-media"><iframe width="100%" style="aspect-ratio:16/9;height:auto;border:0" src="https://www.youtube-nocookie.com/embed/dstoCy_uFSQ" title="tekt · UI Tutorial Part 1: Layouts" loading="lazy" allowfullscreen></iframe><figcaption>Как вложенные панели образуют макет. <a href="https://derivative.ca/community-post/tutorial/ui-tutorial-part-1-layouts/72711">Открыть урок по компоновке</a>.</figcaption></figure>
+<h2>Подключаем кнопки и ползунки к графике</h2>
+<p>Вынесите параметры графики на отдельный Base COMP. Для пробы достаточно Float <code>Intensity</code>, Menu <code>Preset</code> и Pulse <code>Reset</code>. Свяжите интенсивность с яркостью изображения. Меню пусть выбирает одну из двух палитр, а Reset возвращает начальный пресет и интенсивность.</p>
+<p>Для первой панели направьте Parameter COMP на этот Base. Так можно сразу проверить настройки. Когда потребуется собственный макет, используйте Widgets или отдельные Button и Slider COMP. Событие нажатия можно обработать через Panel Execute DAT, а непрерывное значение панели получить через Panel CHOP. После сброса показания интерфейса должны совпадать с фактическими значениями параметров.</p>
+<figure class="embedded-media"><iframe width="100%" style="aspect-ratio:16/9;height:auto;border:0" src="https://www.youtube-nocookie.com/embed/N6vquE28CAc" title="tekt · UI Tutorial Part 2: Widgets" loading="lazy" allowfullscreen></iframe><figcaption>Widgets и Parameter COMP в рабочем интерфейсе. <a href="https://derivative.ca/community-post/tutorial/ui-tutorial-part-2-widgets/72725">Открыть урок по элементам управления</a>.</figcaption></figure>
+<h2>Экран посетителя и окно оператора</h2>
+<p>На экране посетителя предусмотрите состояния «Начать», «Идёт обработка» и «Готово». Если посетитель дважды нажмёт «Начать», второе нажатие должно оставить уже запущенную операцию в работе. Если пропал входной сигнал, дайте посетителю ясную подсказку, а в операторской панели покажите, какой сигнал отсутствует.</p>
+<p>Укажите корневую панель в Window COMP и проверьте её в Perform Mode. Откройте проект на целевом мониторе, проверьте раскрытие окна, размеры текста, ввод и возврат к сцене ожидания. На площадке с двумя экранами заранее проверьте, куда выводится интерфейс и где работает оператор. <a href="https://learn.derivative.ca/courses/100-fundamentals/lessons/105-comps-interfaces-organization-outputs/topic/perform-mode-output-basics/">Видео Derivative и пример .tox для Perform Mode</a>.</p>
+<nav class="lecture-pagination" aria-label="Навигация по лекциям">
+        <a id="prevLecture" href="#">← <span>Предыдущая тема</span></a>
+        <a id="nextLecture" href="#"><span>Следующая тема</span> →</a>
+      </nav>
+    </article>
+  </main>
+</div>
+
+<div class="sidebar-backdrop" aria-hidden="true"></div>
+<script src="../topics.js?v=57"></script>
+<script src="../lecture.js?v=sri1"></script>
+<script src="../site-settings.js?v=20"></script>
+<script src="../course-design.js?v=22"></script>
+</body>
+</html>
