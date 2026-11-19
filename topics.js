@@ -86,5 +86,5 @@ window.COURSE_TOPICS = [
   {"slug": "10-ai-mcp", "title": "Нейросети, компьютерное зрение и MCP в интерактивных проектах", "tags": ["Теория"]},
   {"slug": "11-data-sensors", "title": "Данные и датчики в интерактивных проектах", "tags": ["Теория"]},
   {"slug": "12-materials", "title": "Создание материалов для интерактивного контента", "tags": ["Теория", "Практика", "TouchDesigner"]},
-  {"slug": "13-touchdesigner-interfaces", "title": "Создание интерфейсов в TouchDesigner", "tags": ["Теория", "Практика", "TouchDesigner"]}
+  {"slug": "13-touchdesigner-interfaces", "title": "Создание интерфейсов для интерактивного контента", "tags": ["Теория", "Практика"]}
 ];
