@@ -66,7 +66,6 @@ window.COURSE_TOPICS = [
     "slug": "08-transfer-protocols",
     "title": "Протоколы передачи",
     "tags": [
-      "Актуально",
       "Теория",
       "Софт"
     ],
@@ -76,15 +75,49 @@ window.COURSE_TOPICS = [
     "slug": "09-realtime-graphics",
     "title": "Как формируется графика в реальном времени",
     "tags": [
-      "Актуально",
       "Теория",
       "Практика",
       "TouchDesigner"
     ],
     "thumbnail": "assets/images/topic-realtime-graphics-sculpted.svg"
   },
-  {"slug": "10-ai-mcp", "title": "Нейросети, компьютерное зрение и MCP в интерактивных проектах", "tags": ["Теория"]},
-  {"slug": "11-data-sensors", "title": "Данные и датчики в интерактивных проектах", "tags": ["Теория"]},
-  {"slug": "12-materials", "title": "Создание материалов для интерактивного контента", "tags": ["Теория", "Практика", "TouchDesigner"]},
-  {"slug": "13-touchdesigner-interfaces", "title": "Создание интерфейсов для интерактивного контента", "tags": ["Теория", "Практика"]}
+  {
+    "slug": "10-ai-mcp",
+    "title": "Нейросети, компьютерное зрение и MCP в интерактивных проектах",
+    "tags": [
+      "Актуально",
+      "Теория"
+    ],
+    "thumbnail": "assets/images/topic-ai-mcp-sculpted.svg"
+  },
+  {
+    "slug": "11-data-sensors",
+    "title": "Данные и датчики в интерактивных проектах",
+    "tags": [
+      "Актуально",
+      "Теория"
+    ],
+    "thumbnail": "assets/images/topic-data-sensors-sculpted.svg"
+  },
+  {
+    "slug": "12-materials",
+    "title": "Создание материалов для интерактивного контента",
+    "tags": [
+      "Актуально",
+      "Теория",
+      "Практика",
+      "TouchDesigner"
+    ],
+    "thumbnail": "assets/images/topic-materials-sculpted.svg"
+  },
+  {
+    "slug": "13-touchdesigner-interfaces",
+    "title": "Создание интерфейсов для интерактивного контента",
+    "tags": [
+      "Актуально",
+      "Теория",
+      "Практика"
+    ],
+    "thumbnail": "assets/images/topic-interfaces-sculpted.svg"
+  }
 ];
